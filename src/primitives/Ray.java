@@ -1,40 +1,62 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package primitives;
 
+import java.util.Objects;
+
+/**
+ * Class Ray - A Ray is a vector that is also represented by a space position,
+ * built from two parameters, one vector and the other Point3D
+ */
 public class Ray {
-    private Vector _direction;
-    private Point3D _point;
+    //Object fields
+    Vector _direction;
+    Point3D _point;
 
-    public Ray(Vector direction, Point3D point) {
+    /**
+     * Constructor- getting tow Prams The Vector And the Point3D
+     * @param direction
+     * @param point
+     */
+    public Ray(Vector direction,Point3D point){
         direction.normalize();
-        this._direction = direction;
-        this._point = point;
+        _direction=direction;
+        _point=point;
     }
 
-    public Vector getDirection() {
-        return this._direction;
+
+//-------------------------------------------------------------
+
+    //***********Getters**************************
+    public Vector get_direction() {
+        return _direction;
     }
 
-    public Point3D getPoint() {
-        return this._point;
+    public Point3D get_point() {
+        return _point;
     }
+//----------------------------------------------------------------
 
+    /**
+     * Equal Func- Equals Between Tow Ray Objects
+     * @param o - The other Ray
+     * @return Boolean Answer
+     */
+    @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o != null && this.getClass() == o.getClass()) {
-            Ray ray = (Ray)o;
-            return this._direction.equals(ray._direction) && this._point.equals(ray._point);
-        } else {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ray ray = (Ray) o;
+        return _direction.equals( ray._direction) &&
+                _point.equals(ray._point);
     }
 
+    /**
+     * Classic toString Func for printing
+     * @return String Type
+     */
+    @Override
     public String toString() {
-        return "_direction=" + this._direction + ", _point=" + this._point;
+        return "_direction=" + _direction +
+                ", _point=" + _point ;
+
     }
 }
