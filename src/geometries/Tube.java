@@ -13,8 +13,24 @@ public class Tube implements Geometry {
         this.radius = radius;
     }
 
+    public Ray getAxisRay() {
+        return axisRay;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
     @Override
     public Vector getNormal(Point3D point) {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Tube{" +
+                "axisRay=" + axisRay +
+                ", radius=" + radius +
+                '}';
     }
 }

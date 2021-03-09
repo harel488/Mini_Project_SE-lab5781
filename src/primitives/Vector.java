@@ -1,7 +1,6 @@
 package primitives;
-
-
-
+import static java.lang.System.out;
+import static primitives.Point3D.ZERO;
 
 /**
  * Vector Class- To represent a vector in three-dimensional space
@@ -9,7 +8,7 @@ package primitives;
  * @author
  */
 public class Vector {
-    private Point3D _head;
+    Point3D _head;
 
     //Define the Zero Vector
     // For throwing exceptions if necessary
@@ -21,30 +20,30 @@ public class Vector {
      * @param head
      */
     public Vector(Point3D head) {
-        _head=new Point3D(head);
+        _head=head;
     }
 
     /**
      * Constructor- getting three doubles,
      * checking ig equals to Zero
      *
-     * @param x
-     * @param y
-     * @param z
+     * @param x x axis
+     * @param y y axis
+     * @param z z axis
      */
     public Vector(double x, double y, double z) {
-        Point3D p = new Point3D(x, y, z);
-        _head = p;
-        if (this.equals(Vector.ZeroVector))
-            throw new IllegalArgumentException("this is the Zero Vector");
+        Point3D point = new Point3D(x, y, z);
+        if (point.equals(ZERO))
+            throw new IllegalArgumentException("Vector head cannot be Point(0,0,0)");
+        _head = point;
     }
 
     /**
      * Constructor- getting three Coordinates
      *
-     * @param x
-     * @param y
-     * @param z
+     * @param x x axis
+     * @param y y axis
+     * @param z z axis
      */
     public Vector(Coordinate x, Coordinate y, Coordinate z) {
         this(x.coord,y.coord, z.coord);
@@ -76,7 +75,7 @@ public class Vector {
 
     @Override
     public String toString() {
-        return "head= " + _head;
+        return "head= " + _head.toString();
     }
 
     /**
@@ -106,20 +105,21 @@ public class Vector {
      * @return new Vector after multiplies in scalar
      */
     public Vector scale(double _scale) {
-        return new Vector(_scale * _head.getX(), _scale * _head.getY(), _scale * _head.getZ());
+        return new Vector(_scale * _head._x.coord, _scale * _head._y.coord, _scale * _head._z.coord);
     }
 
     /**
      * Scalar multiplication between two vectors
-     *
+     *by the formula:
+     * (x1,y1,z1)*(x2,y2,z2) = x1*x2 + y1*y2 + z1*z2
      * @param v
      * @return Double Type of the ScalarMult
      */
     public double dotProduct(Vector v) {
-        double result = _head.getX() * v._head.getX() +
-                _head.getY() * v._head.getY() +
-                _head.getZ() * v._head.getZ();
-        return result;
+        return
+                _head._x.coord * v._head._x.coord +
+                _head._y.coord * v._head._y.coord +
+                _head._z.coord * v._head._z.coord;
     }
 
     /**
@@ -129,14 +129,13 @@ public class Vector {
      * @return The New Vector After Multiplication
      */
     public Vector crossProduct(Vector v) {
-        double _x = this._head.getY() * v._head.getZ() - this._head.getZ() * v._head.getY();
-        double _y = this._head.getZ() * v._head.getX() - this._head.getX() * v._head.getZ();
-        double _z = this._head.getX() * v._head.getY() - this._head.getY() * v._head.getX();
+        double _x = this._head._y.coord * v._head._z.coord - this._head._z.coord * v._head._y.coord;
+        double _y = this._head._z.coord * v._head._x.coord - this._head._x.coord * v._head._z.coord;
+        double _z = this._head._x.coord * v._head._y.coord - this._head._y.coord * v._head._x.coord;
         Point3D p =new Point3D(_x,_y,_z);
         if(p.equals(Point3D.ZERO))
             throw new IllegalArgumentException("The Vectors are Parallel ");
         Vector newVec = new Vector(p);
-
         return newVec;
 
     }
@@ -147,7 +146,7 @@ public class Vector {
      * @return Double Type- The Squared Length of the Vector
      */
     public double lengthSquared() {
-        return _head.getX() * _head.getX() + _head.getY() * _head.getY() + _head.getZ() * _head.getZ();
+        return _head._x.coord * _head._x.coord + _head._y.coord * _head._y.coord + _head._z.coord * _head._z.coord;
     }
 
     /**
@@ -159,13 +158,16 @@ public class Vector {
         return Math.sqrt(this.lengthSquared());
     }
 
+
+
     /**
      * Normalized The Vector
      *
-     * @return A new Vector After the normalized
+     * @return A new normalized Vector
      */
     public Vector normalized() {
-        return new Vector(_head.getX() / length(), _head.getY() / length(), _head.getZ() / length());
+        return new Vector(
+             new Point3D(_head._x.coord / length(), _head._y.coord / length(), _head._z.coord / length()) );
     }
 
     /**
@@ -174,8 +176,7 @@ public class Vector {
      * @return the same vector after Normalized
      */
     public Vector normalize() {
-        this._head = new Point3D(_head.getX() / length(), _head.getY() / length(), _head.getZ() / length());
+        this._head = new Point3D(_head._x.coord / length(), _head._y.coord / length(), _head._z.coord / length());
         return this;
     }
-
 }

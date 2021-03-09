@@ -8,65 +8,41 @@ import java.util.Objects;
  * @author
  */
 public class Point3D {
-    private final Coordinate _x;
-    private final Coordinate _y;
-    private final Coordinate _Z;
+    final Coordinate _x;
+    final Coordinate _y;
+    final Coordinate _z;
 
     /**
      * Define The ZERO point so that we can compare and throw exceptions accordingly
      */
-    public final static Point3D ZERO = new Point3D(0.0, 0.0, 0.0);
+    public final static Point3D ZERO = new Point3D(0d, 0d, 0d);
 
     /**
-     * Standard Constructor
+     * Constructor with 3 coordinate params
      *
      * @param x
      * @param y
      * @param z
      */
-    public Point3D(Coordinate x, Coordinate y, Coordinate z) {
-        _x = new Coordinate(x.coord);
-        _y = new Coordinate(y.coord);
-        _Z = new Coordinate(z.coord);
+    public Point3D(Coordinate x, Coordinate   y, Coordinate z) {
+        this(x.coord, y.coord, z.coord);
+
     }
 
     /**
-     * Constructor with double params
+     * Constructor with 3 double params
      *
      * @param x
      * @param y
      * @param z
      */
     public Point3D(double x, double y, double z) {
-        this(new Coordinate(x), new Coordinate(y), new Coordinate(z));
+        _x = new Coordinate(x);
+        _y = new Coordinate(y);
+        _z = new Coordinate(z);
     }
 
-    /**
-     * Copy Constructor
-     *
-     * @param p
-     */
-    public Point3D(Point3D p) {
-        this(p._x.coord, p._y.coord, p._Z.coord);
-    }
 
-    /**
-     * getters for the Coordinates
-     *
-     * @return the Cordinate Value in double type
-     */
-    public double getX() {
-        return _x.coord;
-    }
-
-    public double getY() {
-        return _y.coord;
-    }
-
-    public double getZ() {
-        return _Z.coord;
-    }
-    //***************************************
 
     /**
      * Equals method checking if tow Point3D are equals
@@ -79,7 +55,7 @@ public class Point3D {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Point3D point3D = (Point3D) o;
-        return _x.equals(point3D._x) && _y.equals(point3D._y) && _Z.equals(point3D._Z);
+        return _x.equals(point3D._x) && _y.equals(point3D._y) && _z.equals(point3D._z);
     }
 
     /**
@@ -89,7 +65,7 @@ public class Point3D {
      */
     @Override
     public String toString() {
-        return "(" + _x + "," + _y + "," + _Z + ")";
+        return "(" + _x + "," + _y + "," + _z + ")";
     }
 
     //*************Actions**************
@@ -102,9 +78,9 @@ public class Point3D {
      * @return new Vector with _head= p-this._head
      */
     public Vector subtract(Point3D p) {
-        double x = this.getX() - p.getX();
-        double y = this.getY() - p.getY();
-        double z = this.getZ() - p.getZ();
+        double x = _x.coord - p._x.coord;
+        double y = _y.coord - p._y.coord;
+        double z = _z.coord - p._z.coord;
         return new Vector(x, y, z);
 
     }
@@ -115,21 +91,23 @@ public class Point3D {
      * @return New Point3D after adding vector direction and size
      */
     public Point3D add(Vector v) {
-        return new Point3D(this.getX() + v.getHead().getX(),
-                this.getY() + v.getHead().getY(),
-                this.getZ() + v.getHead().getZ());
+        return new Point3D(
+                _x.coord +v._head._x.coord,
+                _y.coord +v._head._y.coord,
+                _z.coord +v._head._z.coord);
     }
 
     /**
      * The function calculates the square distance between two points
-     *
+     * by the formula:
+     * (x1,y1,z1) <-distance-> (x2,y2,z2) = (x1-x2)^2 + (y1-y2)^2+ (z1-z2)^2
      * @param p - Is the Other Point3D
      * @return Double Type - The Square Distance
      */
     public double distanceSquared(Point3D p) {
-        return (this.getX() - p.getX()) * (this.getX() - p.getX()) +
-                (this.getY() - p.getY()) * (this.getY() - p.getY()) +
-                (this.getZ() - p.getZ()) * (this.getZ() - p.getZ());
+        return  (_x.coord-p._x.coord) * (_x.coord-p._x.coord) +
+                (_y.coord-p._y.coord) * (_y.coord-p._y.coord) +
+                (_z.coord-p._z.coord) * (_z.coord-p._z.coord);
     }
 
     /**
