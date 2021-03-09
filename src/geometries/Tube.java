@@ -4,6 +4,11 @@ import primitives.Point3D;
 import primitives.Vector;
 import primitives.Ray;
 
+
+/**
+ *
+ * @author daniel and harel
+ */
 public class Tube implements Geometry {
     Ray axisRay;
     double radius;
@@ -28,7 +33,7 @@ public class Tube implements Geometry {
 
     /**
      * getter
-     * @return cylnder radius
+     * @return cylinder radius
      */
     public double getRadius() {
         return radius;

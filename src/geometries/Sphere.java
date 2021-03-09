@@ -3,6 +3,10 @@ package geometries;
 import primitives.Point3D;
 import primitives.Vector;
 
+/**
+ *
+ * @author daniel and harel
+ */
 public class Sphere implements Geometry {
     Point3D center;
     double radius;

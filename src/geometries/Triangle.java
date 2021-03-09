@@ -2,6 +2,10 @@ package geometries;
 
 import primitives.Point3D;
 
+/**
+ *
+ * @author daniel and harel
+ */
 public class Triangle extends Polygon {
     /**
      * constructor receiving 3 3D points contained in the triangle
