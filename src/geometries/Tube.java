@@ -13,8 +13,8 @@ import primitives.Ray;
  * @author Harel Isaschar
  */
 public class Tube implements Geometry {
-    Ray axisRay;
-    double radius;
+    Ray _axisRay;
+    double _radius;
 
     /**
      * constructor recieving cylinder's radius and axis ray
@@ -22,8 +22,8 @@ public class Tube implements Geometry {
      * @param radius
      */
     public Tube(Ray axisRay, double radius) {
-        this.axisRay = axisRay;
-        this.radius = radius;
+        _axisRay = axisRay;
+        _radius = radius;
     }
 
     /**
@@ -31,7 +31,7 @@ public class Tube implements Geometry {
      * @return cylinder axis Ray
      */
     public Ray getAxisRay() {
-        return axisRay;
+        return _axisRay;
     }
 
     /**
@@ -39,7 +39,7 @@ public class Tube implements Geometry {
      * @return cylinder radius
      */
     public double getRadius() {
-        return radius;
+        return _radius;
     }
 
     /**
@@ -55,8 +55,8 @@ public class Tube implements Geometry {
     @Override
     public String toString() {
         return "Tube{" +
-                "axisRay=" + axisRay +
-                ", radius=" + radius +
+                "axisRay=" + _axisRay +
+                ", radius=" + _radius +
                 '}';
     }
 }
