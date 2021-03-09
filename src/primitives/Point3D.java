@@ -4,8 +4,8 @@ import java.util.Objects;
 
 /**
  * Point3D class to represent a point in three-dimensional space
- *
- * @author
+ * @author Daniel Honig
+ * @author Harel Isaschar
  */
 public class Point3D {
     final Coordinate _x;

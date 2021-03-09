@@ -1,11 +1,13 @@
 package primitives;
+
 import static java.lang.System.out;
 import static primitives.Point3D.ZERO;
 
 /**
  * Vector Class- To represent a vector in three-dimensional space
  *
- * @author daniel and harel
+ * @author Daniel Honig
+ * @author Harel Isaschar
  */
 public class Vector {
     Point3D _head;
@@ -20,7 +22,7 @@ public class Vector {
      * @param head
      */
     public Vector(Point3D head) {
-        _head=head;
+        _head = head;
     }
 
     /**
@@ -30,6 +32,7 @@ public class Vector {
      * @param x x axis
      * @param y y axis
      * @param z z axis
+     * @throws IllegalArgumentException- if the Constructor build the Zero Vector-{0,0,0}.
      */
     public Vector(double x, double y, double z) {
         Point3D point = new Point3D(x, y, z);
@@ -46,7 +49,7 @@ public class Vector {
      * @param z z axis
      */
     public Vector(Coordinate x, Coordinate y, Coordinate z) {
-        this(x.coord,y.coord, z.coord);
+        this(x.coord, y.coord, z.coord);
     }
 
     /**
@@ -110,16 +113,17 @@ public class Vector {
 
     /**
      * Scalar multiplication between two vectors
-     *by the formula:
+     * by the formula:
      * (x1,y1,z1)*(x2,y2,z2) = x1*x2 + y1*y2 + z1*z2
+     *
      * @param v
      * @return Double Type of the ScalarMult
      */
     public double dotProduct(Vector v) {
         return
                 _head._x.coord * v._head._x.coord +
-                _head._y.coord * v._head._y.coord +
-                _head._z.coord * v._head._z.coord;
+                        _head._y.coord * v._head._y.coord +
+                        _head._z.coord * v._head._z.coord;
     }
 
     /**
@@ -136,8 +140,8 @@ public class Vector {
         double _x = this._head._y.coord * v._head._z.coord - this._head._z.coord * v._head._y.coord;
         double _y = this._head._z.coord * v._head._x.coord - this._head._x.coord * v._head._z.coord;
         double _z = this._head._x.coord * v._head._y.coord - this._head._y.coord * v._head._x.coord;
-        Point3D p =new Point3D(_x,_y,_z);
-        if(p.equals(Point3D.ZERO))
+        Point3D p = new Point3D(_x, _y, _z);
+        if (p.equals(Point3D.ZERO))
             throw new IllegalArgumentException("The Vectors are Parallel ");
         Vector newVec = new Vector(p);
         return newVec;
@@ -163,7 +167,6 @@ public class Vector {
     }
 
 
-
     /**
      * Normalized The Vector
      *
@@ -171,7 +174,7 @@ public class Vector {
      */
     public Vector normalized() {
         return new Vector(
-             new Point3D(_head._x.coord / length(), _head._y.coord / length(), _head._z.coord / length()) );
+                new Point3D(_head._x.coord / length(), _head._y.coord / length(), _head._z.coord / length()));
     }
 
     /**

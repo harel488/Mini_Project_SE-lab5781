@@ -6,8 +6,11 @@ import primitives.Ray;
 
 
 /**
- *
- * @author daniel and harel
+ *Infinite Tube representation by radius of Tube
+ * and the ray in the direction of the Tube
+ * @see geometries.Geometry
+ * @author Daniel Honig
+ * @author Harel Isaschar
  */
 public class Tube implements Geometry {
     Ray axisRay;
@@ -39,6 +42,11 @@ public class Tube implements Geometry {
         return radius;
     }
 
+    /**
+     * overriding getNormal from Geometry interface
+     * @param point - Point3D on the geometry plane
+     * @return normal vector of Tube
+     */
     @Override
     public Vector getNormal(Point3D point) {
         return null;
