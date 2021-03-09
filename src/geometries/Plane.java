@@ -43,6 +43,10 @@ public class Plane implements Geometry {
         return this.getNormal();
     }
 
+    /**
+     * getter
+     * @return orthogonal vector to the plane
+     */
     public Vector getNormal() {
         return _normal;
     }

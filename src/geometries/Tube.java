@@ -8,15 +8,28 @@ public class Tube implements Geometry {
     Ray axisRay;
     double radius;
 
+    /**
+     * constructor recieving cylinder's radius and axis ray
+     * @param axisRay
+     * @param radius
+     */
     public Tube(Ray axisRay, double radius) {
         this.axisRay = axisRay;
         this.radius = radius;
     }
 
+    /**
+     * getter
+     * @return cylinder axis Ray
+     */
     public Ray getAxisRay() {
         return axisRay;
     }
 
+    /**
+     * getter
+     * @return cylnder radius
+     */
     public double getRadius() {
         return radius;
     }
