@@ -10,8 +10,8 @@ import java.util.Objects;
  */
 public class Ray {
     //Object fields
-    Vector _direction;
-    Point3D _point;
+   final Vector _direction;
+   final Point3D _point;
 
     /**
      * Constructor- getting tow Prams The Vector And the Point3D
@@ -28,11 +28,11 @@ public class Ray {
 //-------------------------------------------------------------
 
     //***********Getters**************************
-    public Vector get_direction() {
+    public Vector getDirection() {
         return _direction;
     }
 
-    public Point3D get_point() {
+    public Point3D getPoint() {
         return _point;
     }
 //----------------------------------------------------------------
