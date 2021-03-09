@@ -5,7 +5,7 @@ import static primitives.Point3D.ZERO;
 /**
  * Vector Class- To represent a vector in three-dimensional space
  *
- * @author
+ * @author daniel and harel
  */
 public class Vector {
     Point3D _head;
@@ -62,7 +62,7 @@ public class Vector {
     /**
      * Compares two vectors
      *
-     * @param o
+     * @param o vector to compare with
      * @return true if equals, false if no equals
      */
     @Override
@@ -124,6 +124,10 @@ public class Vector {
 
     /**
      * Vector multiplication that returns the perpendicular vector to two in multiplied vectors
+     * the formula:
+     * ( v1 )     ( u1 )      (  v2*u3 - v3*u2 )
+     * ( v2 )  X  ( u2 )  =   (  v3*u1 - v1*u3 )     [all three are three dimensional vector]
+     * ( v3 )     ( u3 )      (  v1*u2 - v2-u1 )
      *
      * @param v
      * @return The New Vector After Multiplication
