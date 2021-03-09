@@ -1,3 +1,7 @@
+/** author Harel  Isaschar 311225551
+    author Daniel Honig    305343998
+ */
+
 import primitives.*;
 
 import static java.lang.System.out;
@@ -6,8 +10,6 @@ import static primitives.Util.*;
 /**
  * Test program for the 1st stage
  *
- * @author Harel Isaschar 311225551
- * @author Daniel Honig 305343998
  * @author Dan Zilberstein
  */
 public final class Main {
