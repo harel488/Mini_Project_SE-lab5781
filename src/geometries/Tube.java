@@ -13,7 +13,7 @@ import primitives.Ray;
  * @author Harel Isaschar
  */
 public class Tube implements Geometry {
-    Ray _axisRay;
+    final Ray _axisRay;
     final double _radius;
 
     /**
