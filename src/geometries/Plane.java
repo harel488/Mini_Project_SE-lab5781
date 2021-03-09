@@ -3,6 +3,12 @@ package geometries;
 import primitives.Point3D;
 import primitives.Vector;
 
+/**
+ * Plane Class -To represent a two-dimensional surface in a three-dimensional space
+ * @see geometries.Geometry
+ * @author Daniel Honig
+ * @author Harel Isaschar
+ */
 public class Plane implements Geometry {
 
     final Point3D _q0;
@@ -39,7 +45,11 @@ public class Plane implements Geometry {
         _normal = N;
     }
 
-
+    /**
+     * overriding getNormal from Geometry interface
+     * @param point - Point3D on the geometry plane
+     * @return normal vector of the plane
+     */
     @Override
     public Vector getNormal(Point3D point) {
         return _normal;

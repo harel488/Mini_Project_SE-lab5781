@@ -5,6 +5,8 @@ import java.util.Objects;
 /**
  * Class Ray - A Ray is a vector that is also represented by a space position,
  * built from two parameters, one vector and the other Point3D
+ * @author Daniel Honig
+ * @author Harel Isaschar
  */
 public class Ray {
     //Object fields

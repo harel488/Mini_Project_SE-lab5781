@@ -2,6 +2,15 @@ package geometries;
 
 import primitives.Ray;
 
+
+/**
+ * Cylinder class represents a cylinder at final height,
+ * extends Tube class.
+ *
+ * @see geometries.Tube
+ * @author Daniel Honig
+ * @author Harel Isaschar
+ */
 public class Cylinder extends Tube {
 
     double _height;
