@@ -14,7 +14,7 @@ import primitives.Ray;
  */
 public class Tube implements Geometry {
     Ray _axisRay;
-    double _radius;
+    final double _radius;
 
     /**
      * constructor recieving cylinder's radius and axis ray

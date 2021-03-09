@@ -1,5 +1,7 @@
-/** author Harel  Isaschar 311225551
-    author Daniel Honig    305343998
+
+
+/**  Harel  Isaschar 311225551 harel488@gmai.com
+     Daniel Honig    305343998 ortaldanielh@gmail.com
  */
 
 import primitives.*;
