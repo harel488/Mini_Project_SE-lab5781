@@ -46,14 +46,18 @@ public class Cylinder extends Tube {
     public Vector getNormal(Point3D point) {
         //if the vector is contained in one of the cylinder bases than the vector from one point in the base to it
         //would be orthogonal to the axis ray vector
+
         Point3D base1 = _axisRay.getPoint();
         Point3D base2 = base1.add(_axisRay.getDirection().scale(_height));
+
+        if (point.equals(base1) || point.equals(base2))
+            return _axisRay.getDirection();
+
         Vector v1 = point.subtract(base1);
         Vector v2 = point.subtract(base2);
         if (v1.dotProduct(_axisRay.getDirection()) == 0 || v2.dotProduct(_axisRay.getDirection()) == 0) {
             return _axisRay.getDirection();
-        }
-        else
+        } else
             return super.getNormal(point);
     }
     @Override

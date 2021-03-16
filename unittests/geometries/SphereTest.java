@@ -8,12 +8,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SphereTest {
 
+    /**
+     * Test method for
+     * {@link geometries.Sphere#getNormal(Point3D)}.
+     */
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: There is a simple single test here
         Sphere sp = new Sphere(new Point3D(0,0,0),7);
-        assertEquals(new Vector(0,0,1), sp.getNormal(new Point3D(0, 0, 7)), "Bad normal to plane");
+        assertEquals(new Vector(0,0,1), sp.getNormal(new Point3D(0, 0, 7)), "Bad normal to sphere");
 
     }
 }
