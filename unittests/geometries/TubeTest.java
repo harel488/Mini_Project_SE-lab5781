@@ -9,6 +9,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TubeTest {
 
+    /**
+     * Test method for
+     * {@link geometries.Tube#getNormal(Point3D)} .
+     */
     @Test
     void getNormal() {
         // ============ Equivalence Partitions Tests ==============
