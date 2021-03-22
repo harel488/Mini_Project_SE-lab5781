@@ -1,7 +1,11 @@
 package geometries;
 
 import primitives.Point3D;
+import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
+
+import java.util.List;
 
 /**
  *To represent a sphere in a 3D space by the radius of the sphere and the center of the ball
@@ -56,5 +60,51 @@ public class Sphere implements Geometry {
                 "center=" + _center +
                 ", radius=" + _radius +
                 '}';
+    }
+    /**
+     * Calculate the point of intersection with the Sphere
+     * @param ray
+     * @return List of the intersected Point3D
+     */
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+        Point3D P0 = ray.getPoint();
+        Vector v = ray.getDirection();
+
+        if (P0.equals(_center)) {
+            return List.of(_center.add(v.scale(_radius)));
+        }
+
+        Vector U = _center.subtract(P0);
+
+        double tm = Util.alignZero(v.dotProduct(U));
+
+        double d = Util.alignZero(Math.sqrt(U.lengthSquared() -tm*tm));
+
+        if(d>=_radius)
+            return null;
+
+        double th = Util.alignZero(Math.sqrt(_radius*_radius - d*d));
+
+        double t1 = Util.alignZero(tm -th);
+        double t2 = Util.alignZero( tm + th);
+
+        //RETURN only the t points that bigger then 0
+        if(t1 > 0 && t2 > 0){
+            Point3D P1 = ray.getPoint(t1);
+            Point3D P2 = ray.getPoint(t2);
+
+            return List.of(P1,P2);
+        }
+        if(t1 > 0){
+            Point3D P1 = ray.getPoint(t1);
+            return List.of(P1);
+        }
+        if(t2 > 0){
+            Point3D P2 = ray.getPoint(t2);
+            return List.of(P2);
+        }
+        return null;
+
     }
 }

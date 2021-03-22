@@ -42,7 +42,18 @@ public class Point3D {
         _z = new Coordinate(z);
     }
 
+    //*******Getters*********
+    public double getX() {
+        return _x.coord;
+    }
 
+    public double getY() {
+        return _y.coord;
+    }
+
+    public double getZ() {
+        return _z.coord;
+    }
 
     /**
      * Equals method checking if tow Point3D are equals

@@ -9,7 +9,7 @@ import primitives.Vector;
  *
  * @author Daniel Honig
  */
-public interface Geometry {
+public interface Geometry extends Intersectable{
     /**
      *
      * @param point - Point3D on the geometry plane

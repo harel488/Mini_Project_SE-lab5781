@@ -4,6 +4,8 @@ import primitives.Point3D;
 import primitives.Vector;
 import primitives.Ray;
 
+import java.util.List;
+
 
 /**
  *Infinite Tube representation by radius of Tube
@@ -63,5 +65,10 @@ public class Tube implements Geometry {
                 "axisRay=" + _axisRay +
                 ", radius=" + _radius +
                 '}';
+    }
+
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+        return null;
     }
 }

@@ -1,7 +1,11 @@
 package geometries;
 
 import primitives.Point3D;
+import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
+
+import java.util.List;
 
 /**
  * Plane Class -To represent a two-dimensional surface in a three-dimensional space
@@ -61,5 +65,38 @@ public class Plane implements Geometry {
                 "_q0=" + _q0 +
                 ", _normal=" + _normal +
                 '}';
+    }
+
+    /**
+     * Calculate the point of intersection with the plane
+     * @param ray
+     * @return List of the intersected Point3D
+     */
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+        Point3D P0 = ray.getPoint();
+        Vector v = ray.getDirection();
+        Vector n = _normal;
+
+        //if the ray start into the plane there is no intersections.
+        if(_q0.equals(P0))
+            return  null;
+
+        Vector P0Q0 = _q0.subtract(P0);
+
+        double numerator = Util.alignZero(n.dotProduct(P0Q0));
+        if (Util.isZero(numerator))
+            return null;
+
+        double nv = Util.alignZero(n.dotProduct(v));
+
+        // if ray is into the plane
+        if(Util.isZero(nv))
+            return null;
+
+        double  t = Util.alignZero(numerator / nv);
+        Point3D P = ray.getPoint(t);
+
+        return List.of(P);
     }
 }

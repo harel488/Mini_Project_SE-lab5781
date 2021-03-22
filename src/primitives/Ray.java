@@ -61,4 +61,16 @@ public class Ray {
                 ", _point=" + _point ;
 
     }
+
+    /**
+     * calculate point on ray.
+     * @param t
+     * @return P0 + t * v {_point + t * _direction}
+     */
+    public Point3D getPoint(double t)
+    {
+        Point3D P0=getPoint();
+        Vector v=getDirection();
+        return P0.add(v.scale(t));
+    }
 }
