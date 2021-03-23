@@ -15,7 +15,10 @@ class TubeTest {
      */
     @Test
     void getNormal() {
-        // ============ Equivalence Partitions Tests ==============
+        // ===========
+        //
+        //
+        // =   Equivalence Partitions Tests ==============
         // TC01: There is a simple single test here
         Tube tub = new Tube(new Ray(new Vector(new Point3D(0, 0, 1)), new Point3D(0, 0, 0)), 5);
         assertEquals (new Vector(0, 1, 0), tub.getNormal(new Point3D(0, 5, 7)), "Bad normal to tube");

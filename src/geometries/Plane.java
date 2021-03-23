@@ -84,6 +84,7 @@ public class Plane implements Geometry {
 
         Vector P0Q0 = _q0.subtract(P0);
 
+
         double numerator = Util.alignZero(n.dotProduct(P0Q0));
         if (Util.isZero(numerator))
             return null;
@@ -95,6 +96,9 @@ public class Plane implements Geometry {
             return null;
 
         double  t = Util.alignZero(numerator / nv);
+        if(t<0)
+            return null;
+
         Point3D P = ray.getPoint(t);
 
         return List.of(P);
