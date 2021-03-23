@@ -84,6 +84,7 @@ public class Plane implements Geometry {
 
         Vector P0Q0 = _q0.subtract(P0);
 
+
         double numerator = Util.alignZero(n.dotProduct(P0Q0));
         if (Util.isZero(numerator))
             return null;
