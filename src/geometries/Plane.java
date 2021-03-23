@@ -95,6 +95,9 @@ public class Plane implements Geometry {
             return null;
 
         double  t = Util.alignZero(numerator / nv);
+        if(t<0)
+            return null;
+
         Point3D P = ray.getPoint(t);
 
         return List.of(P);
