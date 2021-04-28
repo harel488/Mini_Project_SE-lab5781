@@ -6,6 +6,9 @@ import primitives.Vector;
 
 import static primitives.Util.isZero;
 
+/**
+ * represents the point of view of the scene
+ */
 public class Camera {
     final private Point3D _p0;
     final private Vector _vUp;
@@ -66,8 +69,8 @@ public class Camera {
      * setter for the size of view plane
      * chaining method
      *
-     * @param width
-     * @param height
+     * @param width   actual width of the view plane
+     * @param height  actual height of the view plane
      * @return
      */
     public Camera setViewPlaneSize(double width, double height) {
@@ -80,7 +83,7 @@ public class Camera {
      * setter for the distance from camera to view plane
      * chaining method
      *
-     * @param distance
+     * @param distance distance from the camera to the view plane
      * @return
      */
     public Camera setDistance(double distance) {
@@ -89,11 +92,12 @@ public class Camera {
     }
 
     /**
-     * @param nX
-     * @param nY
-     * @param j
-     * @param i
-     * @return
+     * generates rays from ray to center of a pixel on the view plane
+     * @param nX number of pixels on a row
+     * @param nY number of pixels on a column
+     * @param j  position of a pixel on a row
+     * @param i  position of a pixel on a column
+     * @return the constructed ray that goes the center of the pixel
      */
     public Ray constructRayThroughPixel(int nX, int nY, int j, int i) {
         Point3D Pc = _p0.add(_vTo.scale(_distance));

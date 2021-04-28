@@ -13,6 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * integration tests of construction rays from camera through view plane and finding their intersections with
+ * geometries in the scene
+ */
 public class cameraIntegrationTest {
 
     /**
