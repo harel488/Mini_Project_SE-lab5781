@@ -3,6 +3,7 @@ package unittests.elements;
 import elements.Camera;
 import geometries.Plane;
 import geometries.Sphere;
+import geometries.Triangle;
 import org.junit.jupiter.api.Test;
 import primitives.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +16,6 @@ public class cameraIntegrationTest {
     @Test
     public void SphereTest() {
 
-        // ============ Equivalence Partitions Tests ==============
         // TC01: two intersection points
         Camera camera = new Camera(Point3D.ZERO,
                 new Vector(0, 0, -1), new Vector(0, 1, 0))
@@ -141,8 +141,6 @@ public class cameraIntegrationTest {
 
     @Test
     public void PlaneTest() {
-
-        // ============ Equivalence Partitions Tests ==============
         // TC01: 9 intersection points - plane parallel to XY plane;
         Camera camera = new Camera(Point3D.ZERO,
                 new Vector(0, 0, -1), new Vector(0, 1, 0))
@@ -195,7 +193,8 @@ public class cameraIntegrationTest {
 
         // TC03: 6 intersection points
             camera = new Camera(Point3D.ZERO,
-                new Vector(0, 0, -1), new Vector(0, 1, 0))
+                new Vector(
+                        0, 0, -1), new Vector(0, 1, 0))
                 .setDistance(1)
                 .setViewPlaneSize(3, 3);
 
@@ -219,8 +218,59 @@ public class cameraIntegrationTest {
 
     }
 
+    @Test
+    public void TriangleTest() {
+        // TC01: one intersection points
+        Camera camera = new Camera(Point3D.ZERO,
+                new Vector(0, 0, -1), new Vector(0, 1, 0))
+                .setDistance(1)
+                .setViewPlaneSize(3, 3);
 
-}
+        Triangle tri = new Triangle(new Point3D(0, 1, -2), new Point3D(1, -1, -2), new Point3D(-1, -1, -2));
+
+        List<Point3D> allPoints = null;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                Ray ray = camera.constructRayThroughPixel(3, 3, j, i);
+                List<Point3D> lst = tri.findIntersections(ray);
+                if (lst != null) {
+                    if (allPoints == null) {
+                        allPoints = new LinkedList<>();
+                    }
+                    allPoints.addAll(lst);
+                }
+            }
+        }
+
+        assertEquals(1, allPoints.size(), "wrong, one intersection points");
+
+        // TC02: two intersection points
+        camera = new Camera(Point3D.ZERO,
+                new Vector(0, 0, -1), new Vector(0, 1, 0))
+                .setDistance(1)
+                .setViewPlaneSize(3, 3);
+
+        tri = new Triangle(new Point3D(0, 20, -2), new Point3D(1, -1, -2), new Point3D(-1, -1, -2));
+
+        allPoints = null;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                Ray ray = camera.constructRayThroughPixel(3, 3, j, i);
+                List<Point3D> lst = tri.findIntersections(ray);
+                if (lst != null) {
+                    if (allPoints == null) {
+                        allPoints = new LinkedList<>();
+                    }
+                    allPoints.addAll(lst);
+                }
+            }
+        }
+
+        assertEquals(2, allPoints.size(), "wrong, two intersection points");
+
+
+    }
+    }
 
 
 
