@@ -5,6 +5,8 @@ import primitives.Ray;
 import scene.Scene;
 
 import java.util.List;
+import static geometries.Intersectable.GeoPoint;
+
 
 /**
  * calculates the color of the intersection point between camera rays and geometries in the 3D model
@@ -17,12 +19,12 @@ public class RayTracerBasic extends  RayTracerBase {
 
     @Override
     public Color traceRay(Ray ray) {
-        List<Point3D> intersections = _scene.geometries.findIntersections(ray);
+        List<GeoPoint> intersections = _scene.geometries.findGeoIntersections(ray);
         if(intersections == null){
             return _scene.background;
         }
         else{
-            Point3D closest = ray.findClosestPoint(intersections);
+            GeoPoint closest = ray.findGeoClosestPoint(intersections);
             return calcColor(closest);
         }
 
@@ -30,10 +32,12 @@ public class RayTracerBasic extends  RayTracerBase {
 
     /**
      * calculates the color of a 3D point in the scene
-     * @param point point of intersection
+     * @param geoPoint point of intersection
      * @return point's color
      */
-    public Color calcColor(Point3D point){
-        return _scene.ambientlight.getIntensity();
+    public Color calcColor(GeoPoint geoPoint) {
+        Color intensity = geoPoint.geometry.getEmission();
+        intensity = intensity.add(_scene.ambientlight.getIntensity());
+        return intensity;
     }
 }
