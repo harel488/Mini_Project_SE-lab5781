@@ -4,7 +4,7 @@ import primitives.Color;
 
 class Light {
 
-    private Color _intensity = Color.BLACK;
+    protected Color _intensity = Color.BLACK;
 
     protected Light(Color intensity) {
         _intensity = intensity;
