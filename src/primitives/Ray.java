@@ -103,7 +103,7 @@ public class Ray {
         return  result;
     }
 
-    public GeoPoint findGeoClosestPoint(List<GeoPoint> geoPoints){
+    public GeoPoint findClosestGeoPoint(List<GeoPoint> geoPoints){
         GeoPoint result =null;
         double closestDistance = Double.MAX_VALUE;
 

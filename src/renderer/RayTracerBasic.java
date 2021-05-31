@@ -24,7 +24,7 @@ public class RayTracerBasic extends RayTracerBase {
         if (intersections == null) {
             return _scene._background;
         } else {
-            GeoPoint closest = ray.findGeoClosestPoint(intersections);
+            GeoPoint closest = ray.findClosestGeoPoint(intersections);
             return calcColor(closest, ray);
         }
 
@@ -38,7 +38,8 @@ public class RayTracerBasic extends RayTracerBase {
      */
     public Color calcColor(GeoPoint geoPoint, Ray ray) {
         return _scene._ambientLight.getIntensity()
-                .add(geoPoint.geometry.getEmission()).add(calcLocalEffects(geoPoint, ray));
+                .add(geoPoint.geometry.getEmission())
+                .add(calcLocalEffects(geoPoint, ray));
     }
 
     private Color calcLocalEffects(GeoPoint geoPoint, Ray ray) {
