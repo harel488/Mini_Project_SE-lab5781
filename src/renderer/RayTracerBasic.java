@@ -67,6 +67,7 @@ public class RayTracerBasic extends RayTracerBase {
                             calcSpecular(ks, l, n, v, nShininess, lightIntensity));
                 }
             }
+
         }
         return color;
 
@@ -104,7 +105,7 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
 
-    private static final double DELTA = 0.1;
+    private static final double DELTA = 0000001;
     /**
      * checks if there are no interferences in the way of the light source to the point. if there are
      * other geometries in the midle than there wouldn't be influence of this light source.
@@ -120,7 +121,7 @@ public class RayTracerBasic extends RayTracerBase {
         Ray lightRay = new Ray(lightDirection,point);
         List<GeoPoint> intersections = _scene._geometries.findGeoIntersections(lightRay);
 
-       /** //checking if the intersections point are not behind the light source. if so
+        //checking if the intersections point are not behind the light source. if so
         //there is no shading
         if(intersections!=null) {
             double distance = lightSource.getDistance(geoPoint.point);
@@ -129,7 +130,6 @@ public class RayTracerBasic extends RayTracerBase {
                     return false;
             }
         }
-        return true;**/
-       return intersections == null;
+        return true;
     };
 }
