@@ -59,15 +59,15 @@ public class RayTracerBasic extends RayTracerBase {
         for (LightSource lightSource : _scene._lights) {
             Vector l = lightSource.getL(geoPoint.point);
             double nl = Util.alignZero(n.dotProduct(l));
-            if(unshaded(lightSource.getL(geoPoint.point),
+           if(unshaded(lightSource.getL(geoPoint.point),
                     geoPoint.geometry.getNormal(geoPoint.point),geoPoint,lightSource)) {
-                if (nl * nv > 0) { // sign(nl) == sing(nv)
-                    Color lightIntensity = lightSource.getIntensity(geoPoint.point);
-                    color = color.add(calcDiffusive(kd, l, n, lightIntensity),
-                            calcSpecular(ks, l, n, v, nShininess, lightIntensity));
-                }
-            }
+               if (nl * nv > 0) { // sign(nl) == sing(nv)
+                   Color lightIntensity = lightSource.getIntensity(geoPoint.point);
+                   color = color.add(calcDiffusive(kd, l, n, lightIntensity))
+                           .add(calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+               }
 
+           }
         }
         return color;
 
@@ -105,7 +105,7 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
 
-    private static final double DELTA = 0000001;
+    private static final double DELTA = 0.1;
     /**
      * checks if there are no interferences in the way of the light source to the point. if there are
      * other geometries in the midle than there wouldn't be influence of this light source.
@@ -124,7 +124,7 @@ public class RayTracerBasic extends RayTracerBase {
         //checking if the intersections point are not behind the light source. if so
         //there is no shading
         if(intersections!=null) {
-            double distance = lightSource.getDistance(geoPoint.point);
+            double distance = lightSource.getDistance(point);
             for (GeoPoint geo_point : intersections) {
                 if (geo_point.point.distance(point) < distance)
                     return false;
