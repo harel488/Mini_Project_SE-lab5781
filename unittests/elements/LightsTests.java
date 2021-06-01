@@ -164,7 +164,7 @@ public class LightsTests {
     /**
      * Produce a picture of three spheres and two two planes stand to the right and left of the sphres,
      * lighted by a directional light in front of the scene, point light on top of if, and spot light
-     * a little below the sphere pointing up
+     * a little below the sphere point up
      */
     @Test
     public void myTest() {

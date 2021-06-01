@@ -45,6 +45,7 @@ public class ShadowTests {
         render.writeToImage();
     }
 
+
     /**
      * Produce a picture of a two triangles lighted by a spot light with a Sphere
      * producing a shading
@@ -58,15 +59,12 @@ public class ShadowTests {
                         .setMaterial(new Material().setkS(0.8).setnShininess(60)), //
                 new Triangle(new Point3D(-150, -150, -115), new Point3D(-70, 70, -140), new Point3D(75, 75, -150)) //
                         .setMaterial(new Material().setkS(0.8).setnShininess(60)), //
-                new Sphere(new Point3D(0, 0, -115),30) //
+                new Sphere( new Point3D(0, 0, -115),30) //
                         .setEmission(new Color(java.awt.Color.BLUE)) //
-                        .setMaterial(new Material().setkS(0.5).setkS(0.5).setnShininess(30)) //
+                        .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(30)) //
         );
-        scene._lights.add( //
-                new SpotLight(new Vector(-1, -1, -4),
-                              new Color(700, 400, 400),
-                              new Point3D(40, 40, 115))
-                              .setkL(4E-4).setkL(2E-5));
+        scene._lights.add(new SpotLight( new Vector(-1, -1, -4) ,new Color(700, 400, 400), new Point3D(40, 40, 115)) //
+                        .setkL(4E-4).setkQ(2E-5));
 
         Render render = new Render() //
                 .setImageWriter(new ImageWriter("shadowTrianglesSphere", 600, 600)) //
@@ -75,5 +73,4 @@ public class ShadowTests {
         render.renderImage();
         render.writeToImage();
     }
-
 }
