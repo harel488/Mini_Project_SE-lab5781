@@ -79,17 +79,6 @@ public class Ray {
     {
         Point3D P0=getPoint();
         Vector v=getDirection();
-
-        try
-        {
-            P0.add(v.scale(t));
-        }
-
-
-        catch (Exception e){
-        out.println(t+ "   "  +v._head._x +"  " +v._head._y +"  " + v._head._z);
-            throw new IllegalArgumentException("oops");
-    }
         return P0.add(v.scale(t));
     }
 
