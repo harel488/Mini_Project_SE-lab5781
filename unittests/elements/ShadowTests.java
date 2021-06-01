@@ -60,7 +60,7 @@ public class ShadowTests {
                         .setMaterial(new Material().setkS(0.8).setnShininess(60)), //
                 new Sphere(new Point3D(0, 0, -115),30) //
                         .setEmission(new Color(java.awt.Color.BLUE)) //
-                        .setMaterial(new Material().setkS(0.5).setkS(0.5).setnShininess(30)) //
+                        .setMaterial(new Material().setkD(0.3).setkS(0.5).setnShininess(30)) //
         );
         scene._lights.add( //
                 new SpotLight(new Vector(-1, -1, -4),
