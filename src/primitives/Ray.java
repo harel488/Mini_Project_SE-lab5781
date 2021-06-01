@@ -1,8 +1,11 @@
 package primitives;
+import static java.lang.System.out;
 
 import geometries.Geometry;
 import geometries.Intersectable;
 import static geometries.Intersectable.GeoPoint;
+import static java.lang.System.out;
+import static primitives.Point3D.ZERO;
 
 import java.util.List;
 import java.util.Objects;
@@ -76,6 +79,17 @@ public class Ray {
     {
         Point3D P0=getPoint();
         Vector v=getDirection();
+
+        try
+        {
+            P0.add(v.scale(t));
+        }
+
+
+        catch (Exception e){
+        out.println(t+ "   "  +v._head._x +"  " +v._head._y +"  " + v._head._z);
+            throw new IllegalArgumentException("oops");
+    }
         return P0.add(v.scale(t));
     }
 

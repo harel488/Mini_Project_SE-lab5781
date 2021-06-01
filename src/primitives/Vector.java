@@ -36,8 +36,10 @@ public class Vector {
      */
     public Vector(double x, double y, double z) {
         Point3D point = new Point3D(x, y, z);
-        if (point.equals(ZERO))
+
+        if (point.equals(ZERO)) {
             throw new IllegalArgumentException("Vector head cannot be Point(0,0,0)");
+        }
         _head = point;
     }
 

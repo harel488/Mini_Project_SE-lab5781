@@ -54,6 +54,11 @@ public class PointLight extends Light implements LightSource {
         return this;
     }
 
+    @Override
+    public double getDistance(Point3D point) {
+        return point.distance(_position);
+    }
+
     /**
      * Calculates the intensity of light coming from the light source to the point, by the formula:
      * original intenisy / (kC +   kL * distance between light source and point  +  kQ * squared distance )

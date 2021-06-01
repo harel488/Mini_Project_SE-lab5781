@@ -8,6 +8,8 @@ import primitives.Vector;
  * represent all light sources(include point light and directional light etc, excludes ambient light etc)
  */
 public interface LightSource {
+    double getDistance(Point3D point);
+
     /**
      * calculates intensity of light coming from the light source to the point
      * @param p
