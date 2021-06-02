@@ -32,6 +32,27 @@ public class Ray {
         _point=point;
     }
 
+    private static final double DELTA = 0.1;
+
+    /**
+     * Building a Ray with moving a point
+     * @param point
+     * @param dir
+     * @param n
+     */
+    public Ray(Point3D point, Vector dir, Vector n) {
+        double sign =dir.dotProduct(n);
+        if(Util.isZero(sign)){
+            throw new IllegalArgumentException("direction vector is zero vector");
+        }
+        else
+        {
+            _point=point.add(n.scale(DELTA*Math.signum(sign)));
+            _direction=dir;
+        }
+
+    }
+
 
 //-------------------------------------------------------------
 
