@@ -189,4 +189,50 @@ public class LightsTests {
         render.writeToImage();
     }
 
+/**
+    /**
+     * Produce a picture of a sphere lighted by a directional light
+     */
+/*
+    @Test
+    public void test1() {
+Geometry polygon1 = new Polygon(new Point3D(0,0,0),  new Point3D(0,30,0),
+                new Point3D(10,30,0),  new Point3D(10,0,0))
+                .setEmission(new Color(java.awt.Color.WHITE))
+                .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
+        Geometry polygon2 = new Polygon(new Point3D(-1,0,0),  new Point3D(-1,30,0),
+                new Point3D(-11,30,0),  new Point3D(-11,0,0))
+                .setEmission(new Color(java.awt.Color.WHITE))
+                .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
+        Geometry polygon3 = new Polygon(new Point3D(0,-1,0),  new Point3D(0,-31,0),
+                new Point3D(10,-31,0),  new Point3D(10,-1,0))
+                .setEmission(new Color(java.awt.Color.WHITE))
+                .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
+        Geometry polygon4 = new Polygon(new Point3D(-1,-1,0),  new Point3D(-1,-31,0),
+                new Point3D(-11,-31,0),  new Point3D(-11,-1,0))
+                .setEmission(new Color(java.awt.Color.WHITE))
+                .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
+        Geometry polygon5 = new Polygon(new Point3D(10,30,0),  new Point3D(10,30,-10),
+                new Point3D(-11,-,-10),  new Point3D(-11,-1,0))
+                .setEmission(new Color(java.awt.Color.WHITE))
+                .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
+        Geometry polygon6 = new Polygon(new Point3D(-1,-1,0),  new Point3D(-1,-31,0),
+                new Point3D(-11,-31,0),  new Point3D(-11,-1,0))
+                .setEmission(new Color(java.awt.Color.WHITE))
+                .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
+
+
+
+
+        scene1._geometries.add(polygon1,polygon2,polygon3,polygon4);
+        scene1._lights.add(new DirectionalLight(new Color(java.awt.Color.WHITE), new Vector(0, -1, -1)));
+
+        ImageWriter imageWriter = new ImageWriter("test1", 500, 500);
+        Render render = new Render()//
+                .setImageWriter(imageWriter) //
+                .setCamera(camera3) //
+                .setRayTracer(new RayTracerBasic(scene1));
+        render.renderImage();
+        render.writeToImage();
+    }**/
 }
