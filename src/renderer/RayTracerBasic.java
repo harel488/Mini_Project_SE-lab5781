@@ -4,6 +4,7 @@ import elements.LightSource;
 import primitives.*;
 import scene.Scene;
 
+import javax.naming.LimitExceededException;
 import java.util.List;
 
 import static geometries.Intersectable.GeoPoint;
@@ -83,13 +84,9 @@ public class RayTracerBasic extends RayTracerBase {
 
             if (nl * nv > 0) { // sign(nl) == sing(nv)
                 double ktr = transparency(lightSource, l, n, geoPoint);
-                if (ktr * k > MIN_CALC_COLOR_K)
-                {
                     Color lightIntensity = lightSource.getIntensity(geoPoint.point).scale(ktr);
                     color = color.add(calcDiffusive(kd, l, n, lightIntensity))
                             .add(calcSpecular(ks, l, n, v, nShininess, lightIntensity));
-                }
-
             }
 
         }
@@ -236,22 +233,58 @@ public class RayTracerBasic extends RayTracerBase {
      * @param geopoint
      * @return
      */
-    private double transparency(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
-        Vector lightDirection = l.scale(-1); // from point to light source
-        Ray lightRay = new Ray(geopoint.point, lightDirection, n);
-        double lightDistance = light.getDistance(geopoint.point);
-        var intersections = _scene._geometries.findGeoIntersections(lightRay);
-        if (intersections == null) return 1.0;
-        double ktr = 1.0;
-        for (GeoPoint gp : intersections) {
-            if (Util.alignZero(gp.point.distance(geopoint.point) - lightDistance) <= 0) {
-                ktr *= gp.geometry.getMaterial()._kT;
-                if (ktr < MIN_CALC_COLOR_K) return 0.0;
+   /** private double transparency(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
+        List<Point3D> lightPoints = light.randomPoints(l);
+        double total = 0;
+        for (Point3D point: lightPoints) {
+            double lightDistance = light.getDistance(geopoint.point);
+            var intersections = _scene._geometries.findGeoIntersections(new Ray(geopoint.point,point.subtract(geopoint.point),n));
+            if (intersections == null){
+                total = total +1.0;
+            }
+            else {
+                double ktr = 1.0;
+                for (GeoPoint gp : intersections) {
+                    if (Util.alignZero(gp.point.distance(geopoint.point) - lightDistance) <= 0) {
+                        System.out.println( ktr+" " +gp.geometry.getClass());
+                        ktr = ktr *gp.geometry.getMaterial()._kT;
+                        System.out.println(ktr);
+                        if (ktr < MIN_CALC_COLOR_K) break;
+                    }
+                }
             }
         }
-        return ktr;
-    }
 
+        return total / lightPoints.size();
+    }**/
 
+   private double transparency(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
+       List<Point3D> lightPoints = light.randomPoints(l);
+       double ktrTotal = 0.0;
+       double lightDistance = light.getDistance(geopoint.point);
 
+       for (Point3D lightPoint: lightPoints) {
+           Vector lightDirection = lightPoint.subtract(geopoint.point).normalize();
+           Ray lightRay = new Ray(geopoint.point, lightDirection, n);
+           var intersections = _scene._geometries.findGeoIntersections(lightRay);
+           if (intersections == null) {
+               ktrTotal += 1.0;
+           } else {
+               double ktr = 1.0;
+               for (GeoPoint gp : intersections) {
+                   if (Util.alignZero(gp.point.distance(geopoint.point) - lightDistance) <= 0) {
+                       ktr *= gp.geometry.getMaterial()._kT;
+                       if (ktr < MIN_CALC_COLOR_K) {
+                           break;
+                       }
+                       ;
+                   }
+               }
+               ktrTotal += ktr;
+           }
+       }
+       return ( ktrTotal /  lightPoints.size() );
+   }
 }
+
+
