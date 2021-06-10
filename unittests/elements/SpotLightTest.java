@@ -27,11 +27,11 @@ class SpotLightTest {
                 .setViewPlaneSize(150, 150) //
                 .setDistance(100);
         Geometry sphere = new Sphere(new Point3D(0,0,-30),10).setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(300));;
-        Geometry plane = new Plane(new Point3D(0,0,-50),new Vector(0,0,1)).setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(300));;
+        Geometry plane = new Plane(new Point3D(0,0,-45),new Vector(0,0,1)).setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(300));;
 
-        SpotLight spot = new SpotLight(new Vector(0, 0, -1),
-                new Color(400, 240, 0),
-                new Point3D(0, 0, 0));
+        SpotLight spot = new SpotLight(new Vector(-1, 0, -1),
+                new Color(java.awt.Color.WHITE),
+                new Point3D(20, 0, -10));
         scene1._geometries.add(sphere,plane);
         scene1._lights.add(spot);
 

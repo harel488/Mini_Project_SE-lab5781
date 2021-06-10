@@ -15,7 +15,7 @@ public class SpotLight extends PointLight {
     private Vector _direction;
 
     public SpotLight(Vector direction, Color intensity, Point3D position) {
-        this(direction, intensity, position, 5.0);
+        this(direction, intensity, position, 2.0);
     }
 
     public SpotLight(Vector direction, Color intensity, Point3D position, double radius) {
@@ -58,7 +58,7 @@ public class SpotLight extends PointLight {
         return super.getL(p);
     }
 
-    private static final int PARTITION = 5;
+    private static final int PARTITION = 7;
 
     @Override
     public List<Point3D> randomPoints(Vector lightDirection) {

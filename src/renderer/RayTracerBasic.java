@@ -5,6 +5,7 @@ import primitives.*;
 import scene.Scene;
 
 import javax.naming.LimitExceededException;
+import java.util.LinkedList;
 import java.util.List;
 
 import static geometries.Intersectable.GeoPoint;
@@ -262,14 +263,23 @@ public class RayTracerBasic extends RayTracerBase {
        List<Point3D> lightPoints = light.randomPoints(l);
        double ktrTotal = 0.0;
        double lightDistance = light.getDistance(geopoint.point);
-
-       for (Point3D lightPoint: lightPoints) {
-           Vector lightDirection = lightPoint.subtract(geopoint.point).normalize();
-           Ray lightRay = new Ray(geopoint.point, lightDirection, n);
+       List<Ray> lightRays = new LinkedList<>();
+       //directional light - no position
+       if (lightPoints ==null){
+           lightRays.add(new Ray(geopoint.point, l.scale(-1),n));
+       }
+       //light point with position in the 3D model
+       else{
+           for (Point3D lightPoint: lightPoints){
+               lightRays.add(new Ray(geopoint.point, lightPoint.subtract(geopoint.point).normalize(),n));
+           }
+       }
+       for (Ray lightRay: lightRays) {
            var intersections = _scene._geometries.findGeoIntersections(lightRay);
            if (intersections == null) {
                ktrTotal += 1.0;
-           } else {
+           }
+           else {
                double ktr = 1.0;
                for (GeoPoint gp : intersections) {
                    if (Util.alignZero(gp.point.distance(geopoint.point) - lightDistance) <= 0) {
@@ -283,7 +293,7 @@ public class RayTracerBasic extends RayTracerBase {
                ktrTotal += ktr;
            }
        }
-       return ( ktrTotal /  lightPoints.size() );
+       return ( ktrTotal /  lightRays.size() );
    }
 }
 
