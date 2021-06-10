@@ -90,13 +90,13 @@ public class Sphere extends Geometry {
         double t2 = Util.alignZero(tm +th);
 
         //RETURN only the t points that bigger then 0
-        if(Util.alignZero(t1) > 0){
+        if(Util.alignZero(t1/2) > 0){
             Point3D P1 = ray.getPoint(t1);
             Point3D P2 = ray.getPoint(t2);
 
             return List.of(new GeoPoint(this,P1),new GeoPoint(this,P2));
         }
-        if(Util.alignZero(t2) > 0){
+        if(Util.alignZero(t2 /2) > 0){
             Point3D P1 = ray.getPoint(t2);
             return List.of(new GeoPoint(this,P1));
         }

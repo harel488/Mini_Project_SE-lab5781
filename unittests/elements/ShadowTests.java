@@ -33,9 +33,9 @@ public class ShadowTests {
         );
         scene._lights.add( //
                 new SpotLight(  new Vector(1, 1, -3),
-                                new Color(400, 240, 0),
-                                new Point3D(-100, -100, 200)) //
-                                .setkL(1E-5).setkQ(1.5E-7));
+                        new Color(400, 240, 0),
+                        new Point3D(-100, -100, 200)) //
+                        .setkL(1E-5).setkQ(1.5E-7));
 
         Render render = new Render(). //
                 setImageWriter(new ImageWriter("shadowSphereTriangleInitial", 400, 400)) //
@@ -170,8 +170,9 @@ public class ShadowTests {
                         .setEmission(new Color(java.awt.Color.BLUE)) //
                         .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(30)) //
         );
-        scene._lights.add(new SpotLight( new Vector(-1, -1, -4) ,new Color(700, 400, 400), new Point3D(40, 40, 115)) //
-                        .setkL(4E-4).setkQ(2E-5));
+        SpotLight spotLight = new SpotLight( new Vector(-1, -1, -4) ,new Color(700, 400, 400), new Point3D(40, 40, 115),25);
+        scene._lights.add(spotLight.setkL(4E-4).setkQ(2E-5))
+                ;
 
         Render render = new Render() //
                 .setImageWriter(new ImageWriter("shadowTrianglesSphere", 600, 600)) //
@@ -194,12 +195,11 @@ public class ShadowTests {
                         .setEmission(new Color(java.awt.Color.BLUE)) //
                         .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(30)) //
         );
+        SpotLight spotLight =   new SpotLight(  new Vector(1, 1, -3),
+                new Color(400, 240, 0),
+                new Point3D(-100, -100, 200).add(new Vector(1, 1, -3).scale(12)),3);
         scene._lights.add( //
-                new SpotLight(  new Vector(1, 1, -3),
-                        new Color(400, 240, 0),
-                        new Point3D(-100, -100, 200).add(new Vector(1, 1, -3).scale(12)))
-                        .setkL(1E-5).setkQ(1.5E-7));
-
+               spotLight.setkL(1E-5).setkQ(1.5E-7));
         Render render = new Render(). //
                 setImageWriter(new ImageWriter("shadowSphereTriangleInitial1", 400, 400)) //
                 .setCamera(camera) //

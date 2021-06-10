@@ -4,11 +4,25 @@ import primitives.Color;
 import primitives.Point3D;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * represent all light sources(include point light and directional light etc, excludes ambient light etc)
  */
 public interface LightSource {
+    /**
+     * distance from the center of the light source to the point
+     * @param point
+     * @return distance from the center of the light source to the point
+     */
     double getDistance(Point3D point);
+
+    /**
+     *
+     * @return random point on the light source
+     */
+    List<Point3D> randomPoints(Vector lightDircection);
+
 
     /**
      * calculates intensity of light coming from the light source to the point

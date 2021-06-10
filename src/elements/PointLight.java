@@ -1,14 +1,19 @@
 package elements;
 
+import geometries.Plane;
 import primitives.Color;
 import primitives.Point3D;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 /**
  * represent a 'bulb' - light source which light evenly in all directions
  */
 public class PointLight extends Light implements LightSource {
-    private Point3D _position;
+    protected Point3D _position;
+    protected double _radius=3;
     private double _kC = 1;
     private double _kL = 0;
     private double _kQ = 0;
@@ -19,9 +24,13 @@ public class PointLight extends Light implements LightSource {
      * @param intensity genuine intensity of the light source
      * @param position position in the 3D model of the light source
      */
-    public PointLight(Color intensity, Point3D position) {
+    public PointLight(Color intensity, Point3D position,double radius) {
         super(intensity);
         this._position = position;
+        _radius = radius;
+    }
+    public PointLight(Color intensity, Point3D position) {
+        this(intensity,position,5);
     }
 
     /**
@@ -58,6 +67,38 @@ public class PointLight extends Light implements LightSource {
     public double getDistance(Point3D point) {
         return point.distance(_position);
     }
+
+    private static final int PARTITION = 5;
+    @Override
+    public List<Point3D> randomPoints(Vector lightDirection) {
+        List<Point3D> randomPoints = null;
+        Plane lightSourcePlane = new Plane(_position, lightDirection);
+
+        Point3D p1 = _position.add(new Vector(0,0,1));
+        Point3D p2 = _position.add(new Vector(1,0,0));
+
+        Ray ray1 = new Ray(lightDirection,p1);
+        Ray ray2 = new Ray(lightDirection,p2);
+
+        Point3D planePoint1 = lightSourcePlane.findIntersections(ray1).get(0);
+        Point3D planePoint2 = lightSourcePlane.findIntersections(ray2).get(0);
+
+        Vector x = planePoint2.subtract(planePoint1).normalize();
+        Vector y = x.crossProduct(lightDirection);
+
+        Point3D random ;
+        double distance = _radius / PARTITION;
+        for (int i = -PARTITION; i <= PARTITION; i++) {
+            random = _position.add(x.scale(i*distance));
+            double maxY= Math.sqrt( (_radius * _radius) - (i*distance)*(i*distance));
+            int maximumY = (int) maxY;
+            for (int j = -maximumY; j <= maximumY ; j++) {
+                randomPoints.add(random.add(y.scale(j*distance)));
+            }
+        }
+        return randomPoints;
+    }
+
 
     /**
      * Calculates the intensity of light coming from the light source to the point, by the formula:
