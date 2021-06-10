@@ -1,11 +1,9 @@
 package elements;
 
 import geometries.Plane;
-import primitives.Color;
-import primitives.Point3D;
-import primitives.Ray;
-import primitives.Vector;
+import primitives.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -71,30 +69,32 @@ public class PointLight extends Light implements LightSource {
     private static final int PARTITION = 5;
     @Override
     public List<Point3D> randomPoints(Vector lightDirection) {
-        List<Point3D> randomPoints = null;
+        List<Point3D> randomPoints = new LinkedList<Point3D>();
         Plane lightSourcePlane = new Plane(_position, lightDirection);
-
-        Point3D p1 = _position.add(new Vector(0,0,1));
-        Point3D p2 = _position.add(new Vector(1,0,0));
-
-        Ray ray1 = new Ray(lightDirection,p1);
-        Ray ray2 = new Ray(lightDirection,p2);
+        Point3D p1 = _position.add(lightDirection.scale(10)
+                    .add(new Vector(lightDirection.getHead().getY() * -1, lightDirection.getHead().getX(),0)));
+        Ray ray1 = new Ray(lightDirection.scale(-1),p1);
 
         Point3D planePoint1 = lightSourcePlane.findIntersections(ray1).get(0);
-        Point3D planePoint2 = lightSourcePlane.findIntersections(ray2).get(0);
-
-        Vector x = planePoint2.subtract(planePoint1).normalize();
+        Vector x = planePoint1.subtract(_position).normalize();
         Vector y = x.crossProduct(lightDirection);
-
-        Point3D random ;
-        double distance = _radius / PARTITION;
-        for (int i = -PARTITION; i <= PARTITION; i++) {
-            random = _position.add(x.scale(i*distance));
-            double maxY= Math.sqrt( (_radius * _radius) - (i*distance)*(i*distance));
-            int maximumY = (int) maxY;
-            for (int j = -maximumY; j <= maximumY ; j++) {
-                randomPoints.add(random.add(y.scale(j*distance)));
+        Point3D xPoint;
+        Point3D yPoint;
+        double distance =  _radius / PARTITION;
+        for (int i = -PARTITION; i <= PARTITION ; i++) {
+            if (Util.alignZero(i*distance) != 0) {
+                xPoint = _position.add(x.scale(i * distance));
+            } else {
+                xPoint = _position;
             }
+            double maxY = Math.sqrt((_radius * _radius) - (i * distance) * (i * distance));
+            int moves = (int) (maxY / distance);
+            for (int j = -moves; j <= moves; j++) {
+                if (Util.alignZero(j*distance) != 0) {
+                    randomPoints.add(xPoint.add(y.scale(j * distance)));
+                }
+            }
+
         }
         return randomPoints;
     }

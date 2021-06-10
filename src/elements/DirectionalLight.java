@@ -4,6 +4,7 @@ import primitives.Color;
 import primitives.Point3D;
 import primitives.Vector;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class DirectionalLight extends Light implements LightSource{
 
     @Override
     public List<Point3D> randomPoints(Vector lightDirection) {
-        return null;
+        return  null;
     }
 
 
