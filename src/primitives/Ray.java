@@ -32,10 +32,10 @@ public class Ray {
         _point=point;
     }
 
-    private static final double DELTA = 0.1;
+    private static final double DELTA = 0.1; //constant for moving rays point
 
     /**
-     * Building a Ray with moving a point
+     * Building a Ray with moving a point by DELTA
      * @param point
      * @param dir
      * @param n

@@ -48,4 +48,6 @@ public class SpotLight extends PointLight{
     public Vector getL(Point3D p) {
         return super.getL(p);
     }
+
+
 }

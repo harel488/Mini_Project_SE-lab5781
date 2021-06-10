@@ -4,6 +4,9 @@ import primitives.Color;
 import primitives.Point3D;
 import primitives.Vector;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * represent a 'bulb' - light source which light evenly in all directions
  */
@@ -85,4 +88,6 @@ public class PointLight extends Light implements LightSource {
         }
         return point.subtract(_position).normalize();
     }
+
+
 }

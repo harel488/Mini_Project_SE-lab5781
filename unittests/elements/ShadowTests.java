@@ -1,5 +1,6 @@
 package elements;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 
 import elements.*;
@@ -7,6 +8,8 @@ import geometries.*;
 import primitives.*;
 import renderer.*;
 import scene.Scene;
+
+import java.util.Random;
 
 /**
  * Testing basic shadows
@@ -234,4 +237,6 @@ public class ShadowTests {
         render.renderImage();
         render.writeToImage();
     }
+
+
 }

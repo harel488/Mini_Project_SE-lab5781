@@ -6,6 +6,8 @@ import primitives.*;
 import renderer.*;
 import scene.Scene;
 
+import java.util.List;
+
 /**
  * Test rendering a basic image
  *
@@ -235,4 +237,6 @@ Geometry polygon1 = new Polygon(new Point3D(0,0,0),  new Point3D(0,30,0),
         render.renderImage();
         render.writeToImage();
     }
+
+
 }

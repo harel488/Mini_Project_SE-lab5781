@@ -4,6 +4,8 @@ import primitives.Color;
 import primitives.Point3D;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  *  represents a 'sun light source - light source with only direction but no position
  */
@@ -45,4 +47,6 @@ public class DirectionalLight extends Light implements LightSource{
     public Vector getL(Point3D p) {
         return _direction.normalize();
     }
+
+
 }

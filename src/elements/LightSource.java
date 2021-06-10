@@ -4,6 +4,8 @@ import primitives.Color;
 import primitives.Point3D;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * represent all light sources(include point light and directional light etc, excludes ambient light etc)
  */
@@ -23,4 +25,6 @@ public interface LightSource {
      * @return return vector from light source to the lighten point
      * */
     public Vector getL(Point3D p);
+
+
 }

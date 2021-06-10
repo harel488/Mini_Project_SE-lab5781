@@ -81,18 +81,18 @@ public class RayTracerBasic extends RayTracerBase {
             Vector l = lightSource.getL(geoPoint.point);
             double nl = Util.alignZero(n.dotProduct(l));
 
-               if (nl * nv > 0) { // sign(nl) == sing(nv)
-                   double ktr = transparency(lightSource, l, n, geoPoint);
-                   if (ktr * k > MIN_CALC_COLOR_K)
-                   {
-                       Color lightIntensity = lightSource.getIntensity(geoPoint.point).scale(ktr);
-                       color = color.add(calcDiffusive(kd, l, n, lightIntensity))
-                               .add(calcSpecular(ks, l, n, v, nShininess, lightIntensity));
-                   }
+            if (nl * nv > 0) { // sign(nl) == sing(nv)
+                double ktr = transparency(lightSource, l, n, geoPoint);
+                if (ktr * k > MIN_CALC_COLOR_K)
+                {
+                    Color lightIntensity = lightSource.getIntensity(geoPoint.point).scale(ktr);
+                    color = color.add(calcDiffusive(kd, l, n, lightIntensity))
+                            .add(calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+                }
 
-               }
+            }
 
-           }
+        }
 
         return color;
 
@@ -251,5 +251,7 @@ public class RayTracerBasic extends RayTracerBase {
         }
         return ktr;
     }
+
+
 
 }
