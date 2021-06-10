@@ -21,10 +21,10 @@ public class LightsTests {
     private Camera camera2 = new Camera(new Point3D(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
             .setViewPlaneSize(200, 200) //
             .setDistance(1000);
-    private Camera camera3 = new Camera(new Point3D(0, 40, 250),
+    private Camera camera3 = new Camera(new Point3D(0, 50, 160),
                                         new Vector(0, 0, -1), new Vector(0, 1, 0)) //
                                        .setViewPlaneSize(200, 200) //
-                                       .setDistance(120);
+                                       .setDistance(110);
 
 
     private static Geometry triangle1 = new Triangle( //
@@ -364,15 +364,22 @@ Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
                 .setEmission(new Color(java.awt.Color.RED).scale(0.1))
                 .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
 
+        //decor
+         Geometry outerSphere = new Sphere(new Point3D(-56, 26, 71), 6)
+                 .setEmission(new Color(java.awt.Color.WHITE).scale(0.3))
+                 .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100).setkT(0.9));
+         Geometry innerSphere = new Sphere(new Point3D(-560, 22, 71), 22)
+                 .setEmission(new Color(java.awt.Color.RED).scale(0.1))
+                 .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
 
 
 
         scene1._geometries.add(door1,middle1,door2,middle2,door3,door4,door5,middle3,floor,wallBehind,handle1,handle2,handle3,handle4,roof
         ,wallRight,wallLeft,foot12,foot13,foot14,foot21,foot22,foot23,foot24,foot31,foot32,foot33,foot34,foot41,foot42,foot43,foot44,
-                plateUp,plateDown,plateSide1,plateSide2,plateSide3,plateSide4,middle4,door6);
-        scene1._lights.add(new PointLight(new Color(java.awt.Color.YELLOW), new Point3D(0, 70, 35)));
+                plateUp,plateDown,plateSide1,plateSide2,plateSide3,plateSide4,middle4,door6,outerSphere,innerSphere);
+        scene1._lights.add(new PointLight(new Color(java.awt.Color.YELLOW).scale(0.3), new Point3D(0, 70, 60)));
 
-        ImageWriter imageWriter = new ImageWriter("test1", 1000, 1000);
+        ImageWriter imageWriter = new ImageWriter("test1", 1500, 1500);
         Render render = new Render()//
                 .setImageWriter(imageWriter) //
                 .setCamera(camera3) //
