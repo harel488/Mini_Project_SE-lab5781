@@ -367,12 +367,13 @@ Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
                 .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
 
         //decor
-         Geometry outerSphere = new Sphere(new Point3D(-56, 26, 71), 6)
+         Geometry outerSphere = new Sphere(new Point3D(-56, 28, 71), 6)
                  .setEmission(new Color(java.awt.Color.WHITE).scale(0.3))
                  .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100).setkT(0.9));
-         Geometry innerSphere = new Sphere(new Point3D(-560, 22, 71), 22)
+         Geometry innerSphere = new Sphere(new Point3D(-56, 26, 71), 2)
                  .setEmission(new Color(java.awt.Color.RED).scale(0.1))
                  .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
+
 
 
 
@@ -381,7 +382,7 @@ Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
                 plateUp,plateDown,plateSide1,plateSide2,plateSide3,plateSide4,middle4,door6,outerSphere,innerSphere);
         scene1._lights.add(new PointLight(new Color(java.awt.Color.YELLOW).scale(0.3), new Point3D(0, 70, 60)));
 
-        ImageWriter imageWriter = new ImageWriter("test1", 1500, 1500);
+        ImageWriter imageWriter = new ImageWriter("test1", 500, 500);
         Render render = new Render()//
                 .setImageWriter(imageWriter) //
                 .setCamera(camera3) //
