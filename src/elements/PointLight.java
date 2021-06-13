@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class PointLight extends Light implements LightSource {
     protected Point3D _position;
-    protected double _radius=3;
+    protected double _radius;
     private double _kC = 1;
     private double _kL = 0;
     private double _kQ = 0;
@@ -27,8 +27,14 @@ public class PointLight extends Light implements LightSource {
         this._position = position;
         _radius = radius;
     }
+
+    /**
+     * default constructor - light source is only 3D point with no dimensions
+     * @param intensity genuine intensity of the light source
+     * @param position position in the 3D model of the light source
+     */
     public PointLight(Color intensity, Point3D position) {
-        this(intensity,position,5);
+        this(intensity,position,0);
     }
 
     /**
@@ -61,42 +67,20 @@ public class PointLight extends Light implements LightSource {
         return this;
     }
 
+    /**
+     *
+     * @param point
+     * @return distance from light source position (center of it) to point
+     */
     @Override
     public double getDistance(Point3D point) {
         return point.distance(_position);
     }
 
-    private static final int PARTITION = 5;
     @Override
-    public List<Point3D> randomPoints(Vector lightDirection) {
-        List<Point3D> randomPoints = new LinkedList<Point3D>();
+    public List<Point3D> lightPoints(Vector lightDirection, int minPoints) {
         Plane lightSourcePlane = new Plane(_position, lightDirection);
-        Point3D p1 = _position.add(lightDirection.scale(10)
-                    .add(new Vector(lightDirection.getHead().getY() * -1, lightDirection.getHead().getX(),0)));
-        Ray ray1 = new Ray(lightDirection.scale(-1),p1);
-
-        Point3D planePoint1 = lightSourcePlane.findIntersections(ray1).get(0);
-        Vector x = planePoint1.subtract(_position).normalize();
-        Vector y = x.crossProduct(lightDirection);
-        Point3D xPoint;
-        Point3D yPoint;
-        double distance =  _radius / PARTITION;
-        for (int i = -PARTITION; i <= PARTITION ; i++) {
-            if (Util.alignZero(i*distance) != 0) {
-                xPoint = _position.add(x.scale(i * distance));
-            } else {
-                xPoint = _position;
-            }
-            double maxY = Math.sqrt((_radius * _radius) - (i * distance) * (i * distance));
-            int moves = (int) (maxY / distance);
-            for (int j = -moves; j <= moves; j++) {
-                if (Util.alignZero(j*distance) != 0) {
-                    randomPoints.add(xPoint.add(y.scale(j * distance)));
-                }
-            }
-
-        }
-        return randomPoints;
+        return circlePoint(_position,_radius,lightSourcePlane,minPoints);
     }
 
 
@@ -125,5 +109,54 @@ public class PointLight extends Light implements LightSource {
             return null;
         }
         return point.subtract(_position).normalize();
+    }
+
+
+    /**
+     * gets a 2D circle in the 3D model which represent the light source shape
+     * and produces multiple points distributed on the surface
+     * @param center center of the light source
+     * @param radius radius of the lights source
+     * @param plane the plane containing the circle
+     * @param minPoints min points to produce
+     * @return list of points distributed on the surface,at least as the minimum points required,
+     */
+    public List<Point3D> circlePoint(Point3D center, double radius, Plane plane, int minPoints) {
+        List<Point3D> pointsInCircle = new LinkedList<Point3D>();
+
+        Vector normal = plane.getNormal(_position);
+
+        //defining the plane by two orthogonal vectors included in it;
+
+        //multiple scalar of orthogonal vectors is 0. therefore we create vector x so x*normal =0
+        Vector x = new Vector(normal.getHead().getY() * -1,normal.getHead().getX(),0).normalize();
+        Vector y = x.crossProduct(normal);
+
+        Point3D xPoint;     // movement in the x axis
+        Point3D yPoint;     // movement in the y axis
+        //number of moves from the center to each side in the direction of vector X(or it opposite direction)
+        //if the are was a square then the formula was :square (mn Points) / 2
+        //since the are is a circle (area is about 80 percent) and our coverage is about 80-90
+        // total we get about 2/3 of the original wanted amount
+        // there we multiple the previews formula by 1.25 times (square is 1.5 bigger. after 2/3 reduce we
+        // will get the wanted amount)
+        int PARTITION = (int) (Math.sqrt(minPoints) / 2 * 1.25);
+        double distance = _radius / PARTITION;
+        for (int i = -PARTITION; i <= PARTITION; i++) {
+            if (Util.alignZero(i * distance) != 0) {
+                xPoint = _position.add(x.scale(i * distance));
+            } else {
+                xPoint = _position;
+            }
+            double maxY = Math.sqrt((_radius * _radius) - (i * distance) * (i * distance));
+            int moves = (int) (maxY / distance);
+            for (int j = -moves; j <= moves; j++) {
+                if (Util.alignZero(j * distance) != 0) {
+                    pointsInCircle.add(xPoint.add(y.scale(j * distance)));
+                }
+            }
+
+        }
+        return pointsInCircle;
     }
 }

@@ -21,7 +21,7 @@ public interface LightSource {
      *
      * @return random point on the light source
      */
-    List<Point3D> randomPoints(Vector lightDircection);
+    List<Point3D> lightPoints(Vector lightDircection, int minPoints);
 
 
     /**
