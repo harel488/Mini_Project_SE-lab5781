@@ -422,7 +422,7 @@ Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
         scene1._lights.add(new PointLight(new Color(java.awt.Color.YELLOW)
                 .add(new Color(java.awt.Color.YELLOW)).scale(0.2), new Point3D(0, 50, 40),3));
         scene1._lights.add(new SpotLight(new Vector(0,-1,0),new Color(java.awt.Color.ORANGE).scale(0.5), new Point3D(-56, 50, 71),3));
-        scene1._lights.add(new SpotLight(new Vector(1,-1,0),new Color(java.awt.Color.cyan).scale(0.7), new Point3D(0, 50, 70),3));
+        scene1._lights.add(new SpotLight(new Vector(1,-1,0),new Color(java.awt.Color.cyan).scale(0.7), new Point3D(0, 60, 70),3));
         ImageWriter imageWriter = new ImageWriter("test1", 1000, 1000);
         Render render = new Render()//
                 .setImageWriter(imageWriter) //
