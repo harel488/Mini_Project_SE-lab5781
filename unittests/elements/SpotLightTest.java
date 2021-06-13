@@ -35,7 +35,6 @@ class SpotLightTest {
         scene1._geometries.add(sphere,plane);
         scene1._lights.add(spot);
 
-        List<Point3D> lst = spot.randomPoints(new Vector(0, 0, -1));
 
         ImageWriter imageWriter = new ImageWriter("mytest12", 500, 500);
         Render render = new Render()//

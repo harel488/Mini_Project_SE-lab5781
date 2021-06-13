@@ -170,7 +170,7 @@ public class ShadowTests {
                         .setEmission(new Color(java.awt.Color.BLUE)) //
                         .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(30)) //
         );
-        SpotLight spotLight = new SpotLight( new Vector(-1, -1, -4) ,new Color(700, 400, 400), new Point3D(40, 40, 115),25);
+        SpotLight spotLight = new SpotLight( new Vector(-1, -1, -4) ,new Color(700, 400, 400), new Point3D(40, 40, 115),15);
         scene._lights.add(spotLight.setkL(4E-4).setkQ(2E-5))
                 ;
 

@@ -24,6 +24,13 @@ public class RayTracerBasic extends RayTracerBase {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final double INITIAL_K = 1.0;
+    int MIN_SHADOW_SAMPLES = 0;
+
+    public RayTracerBasic setMIN_SHADOW_SAMPLES(int MIN_SHADOW_SAMPLES) {
+        this.MIN_SHADOW_SAMPLES = MIN_SHADOW_SAMPLES;
+        return this;
+    }
+
 
 
     public RayTracerBasic(Scene myScene) {
@@ -259,30 +266,45 @@ public class RayTracerBasic extends RayTracerBase {
         return total / lightPoints.size();
     }**/
 
-   private double transparency(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
-       List<Point3D> lightPoints = light.randomPoints(l);
-       double ktrTotal = 0.0;
-       double lightDistance = light.getDistance(geopoint.point);
+    /**
+     * calculates the intesity of light coming from light source to geo point
+     * @param light light source
+     * @param l light source direction
+     * @param n normal to the geometry which contains the geopoint
+     * @param geoPoint checked point - whether lighten or shaded
+     * @return value 0%1 represent percentage of lighe approaching to the point from the light source
+     */
+   private double transparency(LightSource light, Vector l, Vector n, GeoPoint geoPoint) {
        List<Ray> lightRays = new LinkedList<>();
-       //directional light - no position
-       if (lightPoints ==null){
-           lightRays.add(new Ray(geopoint.point, l.scale(-1),n));
+       List<Point3D> lightPoints = new LinkedList<>();
+       if ( MIN_SHADOW_SAMPLES != 0){                 //activate soft shadow
+          lightPoints = light.lightPoints(l, MIN_SHADOW_SAMPLES);
        }
-       //light point with position in the 3D model
+
+       double lightDistance = light.getDistance(geoPoint.point);
+       //directional light - no position,  or no need to active soft shadow (lightPoints size =0)
+       if (lightPoints ==null || lightPoints.size() == 0){
+           lightRays.add(new Ray(geoPoint.point, l.scale(-1),n));
+       }
+       //light point with position in the 3D model -
+       //construct shadow rays to many point in the light source.Distribution as uniform as possible.
        else{
            for (Point3D lightPoint: lightPoints){
-               lightRays.add(new Ray(geopoint.point, lightPoint.subtract(geopoint.point).normalize(),n));
+               lightRays.add(new Ray(geoPoint.point, lightPoint.subtract(geoPoint.point).normalize(),n));
            }
        }
+
+       double ktrTotal = 0.0;
+       //finding intersection of the shadow rays
        for (Ray lightRay: lightRays) {
            var intersections = _scene._geometries.findGeoIntersections(lightRay);
-           if (intersections == null) {
+           if (intersections == null) {          // no shadow
                ktrTotal += 1.0;
            }
-           else {
+           else {                               //calculate shadow influence
                double ktr = 1.0;
                for (GeoPoint gp : intersections) {
-                   if (Util.alignZero(gp.point.distance(geopoint.point) - lightDistance) <= 0) {
+                   if (Util.alignZero(gp.point.distance(geoPoint.point) - lightDistance) <= 0) {
                        ktr *= gp.geometry.getMaterial()._kT;
                        if (ktr < MIN_CALC_COLOR_K) {
                            break;
