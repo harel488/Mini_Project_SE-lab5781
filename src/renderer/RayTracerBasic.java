@@ -26,13 +26,21 @@ public class RayTracerBasic extends RayTracerBase {
     private static final double INITIAL_K = 1.0;
     int MIN_SHADOW_SAMPLES = 0;
 
+    /**
+     * setter to the number of ray tracing
+     * @param MIN_SHADOW_SAMPLES
+     * @return this - builder pattern
+     */
     public RayTracerBasic setMIN_SHADOW_SAMPLES(int MIN_SHADOW_SAMPLES) {
         this.MIN_SHADOW_SAMPLES = MIN_SHADOW_SAMPLES;
         return this;
     }
 
 
-
+    /**
+     * constructor
+     * @param myScene
+     */
     public RayTracerBasic(Scene myScene) {
         super(myScene);
     }
@@ -72,10 +80,10 @@ public class RayTracerBasic extends RayTracerBase {
 
 
     /**
-     *
+     * calculate and adding the specular and diffusive reflections
      * @param geoPoint
      * @param ray
-     * @return
+     * @return Color after calculate Local effects
      */
     private Color calcLocalEffects(GeoPoint geoPoint, Ray ray,double k) {
         Vector v = ray.getDirection();
@@ -163,12 +171,13 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     /**
-     *
+     *calculate global effects Kt and Kr(reflections and refractions)
+     * by reflected and refracted rays
      * @param gp
      * @param v
      * @param level
      * @param k
-     * @return
+     * @return Color in geoPoint after reflections and refractions effects
      */
     private Color calcGlobalEffects(GeoPoint gp, Vector v, int level, double k) {
         Color color = Color.BLACK; Vector n = gp.geometry.getNormal(gp.point);
@@ -185,7 +194,7 @@ public class RayTracerBasic extends RayTracerBase {
 
 
     /**
-     *
+     * using calcColor function to scale the color in a closest geoPoint kT and kR
      * @param ray
      * @param level
      * @param kx
@@ -200,11 +209,11 @@ public class RayTracerBasic extends RayTracerBase {
 
 
     /**
-     *
+     * point.add(n.scale(v.dotProduct(n)*DELTA))
      * @param n
      * @param point
      * @param v
-     * @return
+     * @return new ray- moving head of ray by n
      */
     private Ray constructRefractedRay(Vector n,Point3D point,Vector v) {
         return new Ray(point,v,n);
@@ -224,9 +233,9 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     /**
-     *
+     * finding the closest intersections to the ray head  in the scene elements
      * @param ray
-     * @return
+     * @return closest geoPoint
      */
     private GeoPoint findClosestIntersection(Ray ray){
         var points=_scene._geometries.findGeoIntersections(ray);

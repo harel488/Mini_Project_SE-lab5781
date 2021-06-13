@@ -37,4 +37,6 @@ public interface LightSource {
      * @return return vector from light source to the lighten point
      * */
     public Vector getL(Point3D p);
+
+
 }

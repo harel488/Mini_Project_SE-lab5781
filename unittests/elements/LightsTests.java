@@ -194,7 +194,7 @@ public class LightsTests {
      * Produce a picture of a sphere lighted by a directional light
      */
     @Test
-    public void test1() {
+    public void MP1test() {
 Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
                 new Point3D(15,61,0),  new Point3D(15,31,0))
                 .setEmission(new Color(java.awt.Color.WHITE).scale(0.7))

@@ -98,4 +98,6 @@ class RayTest {
         assertEquals(list.get(3), ray.findClosestGeoPoint(list));
     }
 
+
+
 }
