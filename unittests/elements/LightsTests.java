@@ -421,7 +421,7 @@ Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
                 triangle5,triangle6,triangle7,triangle8,sphere1,sphere2,sphere3,wallFront);
         scene1._lights.add(new PointLight(new Color(java.awt.Color.YELLOW)
                 .add(new Color(java.awt.Color.YELLOW)).scale(0.2), new Point3D(0, 50, 40),3));
-        scene1._lights.add(new SpotLight(new Vector(0,-1,0),new Color(java.awt.Color.ORANGE).scale(0.3), new Point3D(-56, 50, 71),3));
+        scene1._lights.add(new SpotLight(new Vector(0,-1,0),new Color(java.awt.Color.orange).scale(0.3), new Point3D(-56, 50, 71),3));
 
         scene1._lights.add(new SpotLight(new Vector(1,-1,0),new Color(java.awt.Color.CYAN).scale(0.8), new Point3D(0, 60, 50),3));
         ImageWriter imageWriter = new ImageWriter("test1", 1500, 1500);
