@@ -292,7 +292,7 @@ public class RayTracerBasic extends RayTracerBase {
 
        double lightDistance = light.getDistance(geoPoint.point);
        //directional light - no position,  or no need to active soft shadow (lightPoints size =0)
-       if (lightPoints ==null || lightPoints.size() == 0){
+       if (lightPoints == null || MIN_SHADOW_SAMPLES == 0){
            lightRays.add(new Ray(geoPoint.point, l.scale(-1),n));
        }
        //light point with position in the 3D model -
@@ -315,7 +315,7 @@ public class RayTracerBasic extends RayTracerBase {
                for (GeoPoint gp : intersections) {
                    if (Util.alignZero(gp.point.distance(geoPoint.point) - lightDistance) <= 0) {
                        ktr *= gp.geometry.getMaterial()._kT;
-                       if (ktr < MIN_CALC_COLOR_K) {
+                        if (ktr < MIN_CALC_COLOR_K) {
                            break;
                        }
                        ;
