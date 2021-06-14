@@ -86,5 +86,3 @@ public class SpotLight extends PointLight {
         return super.circlePoint(_position, _radius, lightSourcePlane, minPoints);
     }
 }
-
-

@@ -195,7 +195,7 @@ public class LightsTests {
      */
     @Test
     public void miniProject01() {
-Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
+        Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
                 new Point3D(15,61,0),  new Point3D(15,31,0))
                 .setEmission(new Color(java.awt.Color.WHITE).scale(0.7))
                 .setMaterial(new Material().setkD(0.6).setkS(0.8).setnShininess(400));
@@ -272,9 +272,9 @@ Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
 
         //foot1
         Geometry foot11 = new Polygon(new Point3D(-40,0,60),new Point3D(-40,0,62),
-                          new Point3D(-40,20,62),new Point3D(-40,20,60))
-                         .setEmission(new Color(java.awt.Color.RED).scale(0.1))
-                         .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
+                new Point3D(-40,20,62),new Point3D(-40,20,60))
+                .setEmission(new Color(java.awt.Color.RED).scale(0.1))
+                .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
         Geometry foot12 = new Polygon(new Point3D(-40,0,62),new Point3D(-42,0,62),
                 new Point3D(-42,20,62),new Point3D(-40,20,62))
                 .setEmission(new Color(java.awt.Color.RED).scale(0.1))
@@ -367,10 +367,10 @@ Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
                 .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
 
         //decor outer
-         Geometry triangle1 = new Triangle((new Point3D(-56,25,71)),new Point3D(-53,21,69),
+        Geometry triangle1 = new Triangle((new Point3D(-56,25,71)),new Point3D(-53,21,69),
                 new Point3D(-53,21,73))
-                 .setEmission(new Color(java.awt.Color.pink).scale(0.1))
-                 .setMaterial(new Material().setkD(0.3).setkS(0.7).setnShininess(100));
+                .setEmission(new Color(java.awt.Color.pink).scale(0.1))
+                .setMaterial(new Material().setkD(0.3).setkS(0.7).setnShininess(100));
         Geometry triangle2 = new Triangle((new Point3D(-56,25,71)),new Point3D(-53,21,73),
                 new Point3D(-59,21,73))
                 .setEmission(new Color(java.awt.Color.pink).scale(0.1))
@@ -400,23 +400,37 @@ Geometry door1 = new Polygon(new Point3D(0,31,0),  new Point3D(0,61,0),
                 new Point3D(-50,21,66))
                 .setMaterial(new Material().setkD(0.3).setkS(0.7).setnShininess(100).setkT(0.8));
 
-
+//wallSpheres
+        Geometry sphere1 = new Sphere(new Point3D(35, 30, 50), 4)
+                .setEmission(new Color(java.awt.Color.RED).scale(0.5))
+                .setMaterial(new Material().setkD(0.5).setkS(0.9).setnShininess(100));
+        Geometry sphere2 = new Sphere(new Point3D(35, 30, 75), 4)
+                .setEmission(new Color(java.awt.Color.ORANGE).scale(0.5))
+                .setMaterial(new Material().setkD(0.5).setkS(0.9).setnShininess(100));
+        Geometry sphere3 = new Sphere(new Point3D(35, 30, 100), 4)
+                .setEmission(new Color(java.awt.Color.GREEN).scale(0.3))
+                .setMaterial(new Material().setkD(0.5).setkS(0.9).setnShininess(100));
 
 
         scene1._geometries.add(door1,middle1,middle2,door2,door3,door4,door5,middle3,floor,wallBehind,handle1,handle2,handle3,handle4,roof
-        ,wallRight,wallLeft,foot11,foot12,foot13,foot14,foot21,foot22,foot23,foot24,foot31,foot32,foot33,foot34,foot41,foot42,foot43,foot44,
+                ,wallRight,wallLeft,foot11,foot12,foot13,foot14,foot21,foot22,foot23,foot24,foot31,foot32,foot33,foot34,foot41,foot42,foot43,foot44,
                 plateUp,plateDown,plateSide1,plateSide2,plateSide3,plateSide4,middle4,door6,triangle1,triangle2,triangle3,triangle4,
-                triangle5,triangle6,triangle7,triangle8,wallFront);
+                triangle5,triangle6,triangle7,triangle8,wallFront,sphere1,sphere2,sphere3);
         scene1._lights.add(new PointLight(new Color(java.awt.Color.YELLOW)
                 .add(new Color(java.awt.Color.YELLOW)).scale(0.2), new Point3D(0, 50, 40),3));
         scene1._lights.add(new SpotLight(new Vector(0,-1,0),new Color(java.awt.Color.orange), new Point3D(-56, 50, 71),3));
+        scene1._lights.add(new SpotLight(new Vector(1.5,-1,0),new Color(java.awt.Color.CYAN).scale(0.8), new Point3D(10, 55, 75),3));
+
         ImageWriter imageWriter = new ImageWriter("test1", 1000, 1000);
         Render render = new Render()//
                 .setImageWriter(imageWriter) //
                 .setCamera(camera3) //
                 .setRayTracer(new RayTracerBasic(scene1)
-                .setMIN_SHADOW_SAMPLES(100));
+                        .setMIN_SHADOW_SAMPLES(77));
         render.renderImage();
         render.writeToImage();
     }
+
+
+
 }
