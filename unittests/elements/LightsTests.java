@@ -426,7 +426,7 @@ public class LightsTests {
                 .setImageWriter(imageWriter) //
                 .setCamera(camera3) //
                 .setRayTracer(new RayTracerBasic(scene1)
-                        .setMIN_SHADOW_SAMPLES(77));
+                        .setMIN_SHADOW_SAMPLES(100));
         render.renderImage();
         render.writeToImage();
     }
