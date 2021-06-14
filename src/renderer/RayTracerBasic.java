@@ -101,9 +101,9 @@ public class RayTracerBasic extends RayTracerBase {
 
             if (nl * nv > 0) { // sign(nl) == sing(nv)
                 double ktr = transparency(lightSource, l, n, geoPoint);
-                    Color lightIntensity = lightSource.getIntensity(geoPoint.point).scale(ktr);
-                    color = color.add(calcDiffusive(kd, l, n, lightIntensity))
-                            .add(calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+                Color lightIntensity = lightSource.getIntensity(geoPoint.point).scale(ktr);
+                color = color.add(calcDiffusive(kd, l, n, lightIntensity))
+                        .add(calcSpecular(ks, l, n, v, nShininess, lightIntensity));
             }
 
         }
@@ -261,30 +261,29 @@ public class RayTracerBasic extends RayTracerBase {
      * @param geopoint
      * @return
      */
-   /** private double transparency(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
-        List<Point3D> lightPoints = light.randomPoints(l);
-        double total = 0;
-        for (Point3D point: lightPoints) {
-            double lightDistance = light.getDistance(geopoint.point);
-            var intersections = _scene._geometries.findGeoIntersections(new Ray(geopoint.point,point.subtract(geopoint.point),n));
-            if (intersections == null){
-                total = total +1.0;
-            }
-            else {
-                double ktr = 1.0;
-                for (GeoPoint gp : intersections) {
-                    if (Util.alignZero(gp.point.distance(geopoint.point) - lightDistance) <= 0) {
-                        System.out.println( ktr+" " +gp.geometry.getClass());
-                        ktr = ktr *gp.geometry.getMaterial()._kT;
-                        System.out.println(ktr);
-                        if (ktr < MIN_CALC_COLOR_K) break;
-                    }
-                }
-            }
-        }
-
-        return total / lightPoints.size();
-    }**/
+    /** private double transparency(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
+     List<Point3D> lightPoints = light.randomPoints(l);
+     double total = 0;
+     for (Point3D point: lightPoints) {
+     double lightDistance = light.getDistance(geopoint.point);
+     var intersections = _scene._geometries.findGeoIntersections(new Ray(geopoint.point,point.subtract(geopoint.point),n));
+     if (intersections == null){
+     total = total +1.0;
+     }
+     else {
+     double ktr = 1.0;
+     for (GeoPoint gp : intersections) {
+     if (Util.alignZero(gp.point.distance(geopoint.point) - lightDistance) <= 0) {
+     System.out.println( ktr+" " +gp.geometry.getClass());
+     ktr = ktr *gp.geometry.getMaterial()._kT;
+     System.out.println(ktr);
+     if (ktr < MIN_CALC_COLOR_K) break;
+     }
+     }
+     }
+     }
+     return total / lightPoints.size();
+     }**/
 
     /**
      * calculates the intesity of light coming from light source to geo point
@@ -294,49 +293,47 @@ public class RayTracerBasic extends RayTracerBase {
      * @param geoPoint checked point - whether lighten or shaded
      * @return value 0%1 represent percentage of lighe approaching to the point from the light source
      */
-   private double transparency(LightSource light, Vector l, Vector n, GeoPoint geoPoint) {
-       List<Ray> lightRays = new LinkedList<>();
-       List<Point3D> lightPoints = new LinkedList<>();
-       if ( MIN_SHADOW_SAMPLES != 0){                 //activate soft shadow
-          lightPoints = light.lightPoints(l, MIN_SHADOW_SAMPLES);
-       }
+    private double transparency(LightSource light, Vector l, Vector n, GeoPoint geoPoint) {
+        List<Ray> lightRays = new LinkedList<>();
+        List<Point3D> lightPoints = new LinkedList<>();
+        if ( MIN_SHADOW_SAMPLES != 0){                 //activate soft shadow
+            lightPoints = light.lightPoints(l, MIN_SHADOW_SAMPLES);
+        }
 
-       double lightDistance = light.getDistance(geoPoint.point);
-       //directional light - no position,  or no need to active soft shadow (lightPoints size =0)
-       if (lightPoints == null || MIN_SHADOW_SAMPLES == 0){
-           lightRays.add(new Ray(geoPoint.point, l.scale(-1),n));
-       }
-       //light point with position in the 3D model -
-       //construct shadow rays to many point in the light source.Distribution as uniform as possible.
-       else{
-           for (Point3D lightPoint: lightPoints){
-               lightRays.add(new Ray(geoPoint.point, lightPoint.subtract(geoPoint.point).normalize(),n));
-           }
-       }
+        double lightDistance = light.getDistance(geoPoint.point);
+        //directional light - no position,  or no need to active soft shadow (lightPoints size =0)
+        if (lightPoints == null || MIN_SHADOW_SAMPLES == 0){
+            lightRays.add(new Ray(geoPoint.point, l.scale(-1),n));
+        }
+        //light point with position in the 3D model -
+        //construct shadow rays to many point in the light source.Distribution as uniform as possible.
+        else{
+            for (Point3D lightPoint: lightPoints){
+                lightRays.add(new Ray(geoPoint.point, lightPoint.subtract(geoPoint.point).normalize(),n));
+            }
+        }
 
-       double ktrTotal = 0.0;
-       //finding intersection of the shadow rays
-       for (Ray lightRay: lightRays) {
-           var intersections = _scene._geometries.findGeoIntersections(lightRay);
-           if (intersections == null) {          // no shadow
-               ktrTotal += 1.0;
-           }
-           else {                               //calculate shadow influence
-               double ktr = 1.0;
-               for (GeoPoint gp : intersections) {
-                   if (Util.alignZero(gp.point.distance(geoPoint.point) - lightDistance) <= 0) {
-                       ktr *= gp.geometry.getMaterial()._kT;
+        double ktrTotal = 0.0;
+        //finding intersection of the shadow rays
+        for (Ray lightRay: lightRays) {
+            var intersections = _scene._geometries.findGeoIntersections(lightRay);
+            if (intersections == null) {          // no shadow
+                ktrTotal += 1.0;
+            }
+            else {                               //calculate shadow influence
+                double ktr = 1.0;
+                for (GeoPoint gp : intersections) {
+                    if (Util.alignZero(gp.point.distance(geoPoint.point) - lightDistance) <= 0) {
+                        ktr *= gp.geometry.getMaterial()._kT;
                         if (ktr < MIN_CALC_COLOR_K) {
-                           break;
-                       }
-                       ;
-                   }
-               }
-               ktrTotal += ktr;
-           }
-       }
-       return ( ktrTotal /  lightRays.size() );
-   }
+                            break;
+                        }
+                        ;
+                    }
+                }
+                ktrTotal += ktr;
+            }
+        }
+        return ( ktrTotal /  lightRays.size() );
+    }
 }
-
-
