@@ -58,7 +58,7 @@ public class RayTracerBasic extends RayTracerBase {
      * reflection and refraction.
      * the deep of The recursion depth is blocked from above by maximum levels defined above.
      * @param intersection - the current geometry point
-     * @param ray - intersected rray
+     * @param ray - intersected ray
      * @param level - level of recursive reflection and refraction calculate
      * @return
      */
@@ -202,10 +202,9 @@ public class RayTracerBasic extends RayTracerBase {
 
     /**
      * using calcColor function to scale the color in a closest geoPoint with kT and kR
-     * @param ray
-     * @param level
-     * @param kx
-     * @param kkx
+     * @param ray - reflected/refracted ray
+     * @param level -level for the recursive calling from calcColor()
+     * @param kx - kt/kr of material
      * @return
      */
     private Color calcGlobalEffect(Ray ray, int level, double kx, double kkx) {
