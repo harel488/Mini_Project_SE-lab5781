@@ -39,7 +39,7 @@ public class RayTracerBasic extends RayTracerBase {
 
     /**
      * constructor
-     * @param myScene
+     * @param myScene - all scene elements and geometries
      */
     public RayTracerBasic(Scene myScene) {
         super(myScene);
@@ -53,11 +53,13 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     /**
-     * recursive calcColor
-     * @param intersection
-     * @param ray
-     * @param level
-     * @param k
+     * recursive calcColor -
+     * calcColor is a recursive function to produce an effect of
+     * reflection and refraction.
+     * the deep of The recursion depth is blocked from above by maximum levels defined above.
+     * @param intersection - the current geometry point
+     * @param ray - intersected rray
+     * @param level - level of recursive reflection and refraction calculate
      * @return
      */
     private Color calcColor(GeoPoint intersection, Ray ray, int level, double k) {
@@ -69,7 +71,6 @@ public class RayTracerBasic extends RayTracerBase {
 
     /**
      * calculates the color of a 3D point in the scene
-     * call to the recursive func
      * @param point point of intersection
      * @return point's color
      */
@@ -81,8 +82,8 @@ public class RayTracerBasic extends RayTracerBase {
 
     /**
      * calculate and adding the specular and diffusive reflections
-     * @param geoPoint
-     * @param ray
+     * @param geoPoint - the current point on geometry
+     * @param ray - intersected ray
      * @return Color after calculate Local effects
      */
     private Color calcLocalEffects(GeoPoint geoPoint, Ray ray,double k) {
@@ -112,17 +113,19 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     /**
-     * @param ks
-     * @param l
-     * @param n
-     * @param v
+     * calculate the specular effect from the body
+     * The light decreases exponentially as the angle between V and R increases
+     * @param ks - the geometry specular Coefficient of exclusion
+     * @param l - the light ray that strikes the geometry
+     * @param n - normal to the geometry
+     * @param v - camera vTO
      * @param nShininess
      * @param lightIntensity
      * @return Ks* (max(0,-v*r))^nShininess
      */
     private Color calcSpecular(double ks, Vector l, Vector n, Vector v, int nShininess, Color lightIntensity) {
         double nl = Util.alignZero(n.dotProduct(l));
-        Vector R = l.add(n.scale(-2 * nl));
+        Vector R = l.add(n.scale(-2 * nl)); // The reflection vector of light
         double VR = -1 * Util.alignZero(R.dotProduct(v));
         if (VR <= 0) {
             return Color.BLACK;
@@ -131,14 +134,16 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     /**
-     * @param kd
-     * @param l
-     * @param n
+     * calculate the diffuse effect from the body
+     * the diffuse is maximum in the normal direction and fades towards the sides.
+     * @param kd - the geometry diffusive Coefficient of exclusion
+     * @param l -  the light ray that strikes the geometry
+     * @param n - normal to the geometry
      * @param lightIntensity
      * @return KD * |nl| *Il (lightIntensity)
      */
     private Color calcDiffusive(double kd, Vector l, Vector n, Color lightIntensity) {
-        double nl = Math.abs(Util.alignZero(n.dotProduct(l)));
+        double nl = Math.abs(Util.alignZero(n.dotProduct(l))); // cos of angle between them
         return lightIntensity.scale(nl * kd);
     }
 
@@ -173,9 +178,11 @@ public class RayTracerBasic extends RayTracerBase {
     /**
      *calculate global effects Kt and Kr(reflections and refractions)
      * by reflected and refracted rays
-     * @param gp
-     * @param v
-     * @param level
+     * the reflection and refraction calculating
+     * is performed by recursion with stop conditions depending on MAX_CALC_COLOR_LEVEL
+     * @param gp - the current point on the geometry
+     * @param v - intersected ray direction
+     * @param level - level for the recursive calling from calcColor()
      * @param k
      * @return Color in geoPoint after reflections and refractions effects
      */
@@ -194,7 +201,7 @@ public class RayTracerBasic extends RayTracerBase {
 
 
     /**
-     * using calcColor function to scale the color in a closest geoPoint kT and kR
+     * using calcColor function to scale the color in a closest geoPoint with kT and kR
      * @param ray
      * @param level
      * @param kx
@@ -209,22 +216,26 @@ public class RayTracerBasic extends RayTracerBase {
 
 
     /**
+     * constructing the refracted ray following transparency
+     * the ray point is in the intersection point moving by n
+     * and the direction of the new ray is the same direction
      * point.add(n.scale(v.dotProduct(n)*DELTA))
-     * @param n
-     * @param point
-     * @param v
-     * @return new ray- moving head of ray by n
+     * @param n - the normal to the geometry
+     * @param point - intersection point
+     * @param v - the intersected ray direction
+     * @return new ray- moving head of ray by n vector
      */
     private Ray constructRefractedRay(Vector n,Point3D point,Vector v) {
         return new Ray(point,v,n);
     }
 
     /**
-     *  r = v - 2 * (v * n) * n
-     * @param n
-     * @param point
-     * @param v
-     * @return
+     *  constructing the reflected ray when the geometry Has a mirror effect
+     *  the calculate is very similar to specular light calculate
+     * @param n -  the normal to the geometry
+     * @param point -intersection point
+     * @param v - the intersected ray direction
+     * @return r = v - 2 * (v * n) * n
      */
     private Ray constructReflectedRay(Vector n,Point3D point,Vector v) {
         double s=v.dotProduct(n)*2;
