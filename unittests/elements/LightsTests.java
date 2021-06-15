@@ -421,12 +421,12 @@ public class LightsTests {
         scene1._lights.add(new SpotLight(new Vector(0,-1,0),new Color(java.awt.Color.orange), new Point3D(-56, 50, 71),3));
         scene1._lights.add(new SpotLight(new Vector(1.5,-1,0),new Color(java.awt.Color.CYAN).scale(0.8), new Point3D(10, 55, 75),3));
 
-        ImageWriter imageWriter = new ImageWriter("test1", 300, 300);
+        ImageWriter imageWriter = new ImageWriter("test1", 1000, 1000);
         Render render = new Render()//
                 .setImageWriter(imageWriter) //
                 .setCamera(camera3) //
                 .setRayTracer(new RayTracerBasic(scene1)
-                        .setMIN_SHADOW_SAMPLES(100));
+                        .setMIN_SHADOW_SAMPLES(50));
         render.renderImage();
         render.writeToImage();
     }
