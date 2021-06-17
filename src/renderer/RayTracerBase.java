@@ -5,6 +5,8 @@ import primitives.Ray;
 import scene.Scene;
 import primitives.Color;
 
+import java.util.List;
+
 /**
  *  stores scene data and
  *  calculates the color of the intersection point between camera rays and geometries in the scene
@@ -26,4 +28,6 @@ public abstract class RayTracerBase {
      * @return point's color
      */
     abstract public Color traceRay(Ray ray);
+
+    abstract public Color traceRays(List<Ray> rays);
 }

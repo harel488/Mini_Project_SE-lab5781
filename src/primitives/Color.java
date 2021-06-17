@@ -13,9 +13,9 @@ public class Color {
      * The internal fields tx`o maintain RGB components as double numbers from 0 to
      * whatever...
      */
-    private final double r;
-    private final double g;
-    private final double b;
+    public final double r;
+    public final double g;
+    public final double b;
 
     /**
      * Black color = (0,0,0)
@@ -120,6 +120,18 @@ public class Color {
         if (k < 1)
             throw new IllegalArgumentException("Can't scale a color by a by a number lower than 1");
         return new Color(r / k, g / k, b / k);
+    }
+
+    /**
+     * checks if two colors looks the same
+     * @param otherColor
+     * @return true if the difference between the colors are not more than 5 percent in each of the RGB. else false
+     */
+    public boolean same(Color otherColor){
+        double red = otherColor.r / r;
+        double green = otherColor.g / g;
+        double blue = otherColor.b / b;
+        return !(red>1.1 || red <0.9|| green>1.1 || green <0.9 ||blue>1.1 || blue <0.9);
     }
 
 }

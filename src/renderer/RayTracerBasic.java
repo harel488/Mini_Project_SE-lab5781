@@ -24,7 +24,14 @@ public class RayTracerBasic extends RayTracerBase {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final double INITIAL_K = 1.0;
-    int MIN_SHADOW_SAMPLES = 0;
+    int MIN_SHADOW_SAMPLES;
+    boolean MULTISAMPLING=false;
+
+    public RayTracerBasic setMULTISAMPLING() {
+        MULTISAMPLING = true;
+        return this;
+    }
+
 
     /**
      * setter to the number of ray tracing
@@ -51,6 +58,79 @@ public class RayTracerBasic extends RayTracerBase {
         GeoPoint closestPoint=findClosestIntersection(ray);
         return closestPoint==null? _scene._background:calcColor(closestPoint,ray);
     }
+
+    @Override
+    public Color traceRays(List<Ray> rays) {
+        if(MULTISAMPLING){
+            return traceBeam(rays,0);
+        }
+        Color col = Color.BLACK;
+        for (Ray ray:rays) {
+            col = col.add(traceRay(ray));
+        }
+        return  col.reduce(rays.size());
+    }
+
+    int MAX_LEVEL =4;
+    public Color traceBeam(List<Ray> rays, int level) {
+
+        Color LeftDown = traceRay(rays.get(0));
+        Color leftUp = traceRay(rays.get(1));
+        Color rightDown = traceRay(rays.get(2));
+        Color rightUp = traceRay(rays.get(3));
+        if(level == MAX_LEVEL  ||  (LeftDown.same(leftUp)  && LeftDown.same(rightDown) && LeftDown.same(rightUp))  ){
+            return ( LeftDown.add(leftUp).add(rightDown).add(rightUp) ).reduce(rays.size());
+        }
+        else {
+            Point3D c0 = rays.get(0).getDirection().scale(1).getHead();   //corner left down
+            Point3D c1 = rays.get(1).getDirection().scale(1).getHead();   //corner left up
+            Point3D c2 = rays.get(3).getDirection().scale(1).getHead();   //corner right up
+
+            Point3D p0 = rays.get(0).getPoint();
+            Vector right = c2.subtract(c1).normalize();
+            Vector down = c0.subtract(c1).normalize();
+
+            double rightLength = c2.distance(c1);
+            double downLength = c0.distance(c1);
+            Ray middleUp = new Ray(new Vector(c1.add(right.scale(rightLength * 0.5))), p0);
+            Ray middleDown = new Ray(new Vector(c0.add(right.scale(rightLength * 0.5))), p0);
+            Ray middleLeft = new Ray(new Vector(c1.add(down.scale(downLength * 0.5))), p0);
+            Ray middleRight = new Ray(new Vector(c2.add(down.scale(rightLength * 0.5))), p0);
+            Ray center = new Ray(new Vector(c1.add(right.scale(rightLength * 0.5)).add(down.scale(downLength * 0.5))), p0);
+
+            List<Ray> cube1 = new LinkedList<Ray>();
+            cube1.add(middleLeft);
+            cube1.add(rays.get(1));
+            cube1.add(middleUp);
+            cube1.add(center);
+            List<Ray> cube2 = new LinkedList<Ray>();
+            cube2.add(center);
+            cube2.add(middleUp);
+            cube2.add(rays.get(3));
+            cube2.add(middleRight);
+
+            List<Ray> cube3 = new LinkedList<Ray>();
+            cube3.add(rays.get(0));
+            cube3.add(middleLeft);
+            cube3.add(center);
+            cube3.add(middleDown);
+
+            List<Ray> cube4 = new LinkedList<Ray>();
+            cube4.add(middleDown);
+            cube4.add(center);
+            cube4.add(middleRight);
+            cube4.add(rays.get(2));
+
+            level++;
+            return traceBeam(cube1,level).scale(0.25)
+                    .add(traceBeam(cube2,level).scale(0.25))
+                    .add(traceBeam(cube3,level).scale(0.25))
+                    .add(traceBeam(cube4,level).scale(0.25));
+        }
+    }
+
+
+
 
     /**
      * recursive calcColor -

@@ -35,7 +35,7 @@ public class LightsTests {
             .setEmission(new Color(java.awt.Color.BLUE)) //
             .setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(100));
 
-    private static Geometry sphere1 = new Sphere(new Point3D(0, 0, -100), 50);
+    private static Geometry sphere1 = new Sphere(new Point3D(0, 0, -100), 100);
     private static Geometry sphere2 = new Sphere(new Point3D(100, 0, -100), 50);
     private static Geometry sphere3 = new Sphere(new Point3D(-100, 0, -100), 50);
 
@@ -80,7 +80,7 @@ public class LightsTests {
         ImageWriter imageWriter = new ImageWriter("lightSpherePoint", 500, 500);
         Render render = new Render()//
                 .setImageWriter(imageWriter) //
-                .setCamera(camera1) //
+                .setCamera(camera1.setMULTI_SAMPLING_SAMPLES(17)) //
                 .setRayTracer(new RayTracerBasic(scene1));
         render.renderImage();
         render.writeToImage();
@@ -168,23 +168,15 @@ public class LightsTests {
      */
     @Test
     public void myTest() {
-        scene2._geometries.add(sphere1.setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(300)),
-                sphere2.setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(300)) ,
-                sphere3.setMaterial(new Material().setkD(0.5).setkS(0.5).setnShininess(300)),
-                planeA.setMaterial(new Material().setkD(0.9).setkS(0.1).setnShininess(100)),
-                planeB.setMaterial(new Material().setkD(0.9).setkS(0.1).setnShininess(100)));
 
         scene2._lights.add(new DirectionalLight(new Color(java.awt.Color.WHITE), new Vector(new Point3D(0,0,-1))));
-        scene2._lights.add(new PointLight(new Color(java.awt.Color.RED),new Point3D(0,80,-100)).setkL(0.0005));
-        scene2._lights.add(new SpotLight(new Vector(0,1,0),
-                new Color(java.awt.Color.YELLOW),new Point3D(0,-100,-100)));
 
 
-        ImageWriter imageWriter = new ImageWriter("myTest", 500, 500);
+        ImageWriter imageWriter = new ImageWriter("myTest", 1000, 1000);
         Render render = new Render()//
                 .setImageWriter(imageWriter) //
-                .setCamera(camera3) //
-                .setRayTracer(new RayTracerBasic(scene2));
+                .setCamera(camera3.setMULTI_SAMPLING_SAMPLES(17)) //
+                .setRayTracer(new RayTracerBasic(scene2).setMULTISAMPLING());
         render.renderImage();
         render.writeToImage();
     }
@@ -424,9 +416,10 @@ public class LightsTests {
         ImageWriter imageWriter = new ImageWriter("test1", 1000, 1000);
         Render render = new Render()//
                 .setImageWriter(imageWriter) //
-                .setCamera(camera3) //
+                .setCamera(camera3.setMULTI_SAMPLING_SAMPLES(9)) //
                 .setRayTracer(new RayTracerBasic(scene1)
-                        .setMIN_SHADOW_SAMPLES(50));
+                        .setMIN_SHADOW_SAMPLES(100))
+                .setMultithreading(3).setDebugPrint();
         render.renderImage();
         render.writeToImage();
     }

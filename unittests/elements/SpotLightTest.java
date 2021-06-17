@@ -40,7 +40,7 @@ class SpotLightTest {
         Render render = new Render()//
                 .setImageWriter(imageWriter) //
                 .setCamera(camera1) //
-                .setRayTracer(new RayTracerBasic(scene1));
+                .setRayTracer(new RayTracerBasic(scene1).setMIN_SHADOW_SAMPLES(100000));
         render.renderImage();
         render.writeToImage();
 

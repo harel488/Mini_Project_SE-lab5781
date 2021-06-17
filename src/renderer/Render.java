@@ -3,6 +3,7 @@ package renderer;
 import primitives.*;
 import elements.*;
 
+import java.util.List;
 import java.util.MissingResourceException;
 
 /**
@@ -232,8 +233,9 @@ public class Render {
      * @param row pixel's row number (pixel index in column)
      */
     private void castRay(int nX, int nY, int col, int row) {
-        Ray ray = camera.constructRayThroughPixel(nX, nY, col, row);
-        Color color = tracer.traceRay(ray);
+        List<Ray> rays = camera.constructGridThroughPixel(nX, nY, col, row);
+
+        Color color = tracer.traceRays(rays);
         imageWriter.writePixel(col, row, color);
     }
 

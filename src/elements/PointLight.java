@@ -123,13 +123,24 @@ public class PointLight extends Light implements LightSource {
      */
     public List<Point3D> circlePoint(Point3D center, double radius, Plane plane, int minPoints) {
         List<Point3D> pointsInCircle = new LinkedList<Point3D>();
+        if (radius==0){
+            pointsInCircle.add(center);
+            return pointsInCircle;
+        }
 
         Vector normal = plane.getNormal(_position);
 
+        //x axis
+        Vector x;
         //defining the plane by two orthogonal vectors included in it;
-
         //multiple scalar of orthogonal vectors is 0. therefore we create vector x so x*normal =0
-        Vector x = new Vector(normal.getHead().getY() * -1,normal.getHead().getX(),0).normalize();
+        if(normal.getHead().getX() ==0 && normal.getHead().getY()  ==0){    //the orthogonal vector crates by the formula below would be zero vector
+            x = new Vector(1,0,0);
+        }
+        else {
+            x = new Vector(normal.getHead().getY() * -1, normal.getHead().getX(), 0).normalize();
+        }
+        //y axix
         Vector y = x.crossProduct(normal);
 
         Point3D xPoint;     // movement in the x axis
@@ -138,9 +149,8 @@ public class PointLight extends Light implements LightSource {
         //if the are was a square then the formula was :square (mn Points) / 2
         //since the are is a circle (area is about 80 percent) and our coverage is about 80-90
         // total we get about 2/3 of the original wanted amount
-        // there we multiple the previews formula by 1.25 times (square is 1.5 bigger. after 2/3 reduce we
-        // will get the wanted amount)
-        int PARTITION = (int) (Math.sqrt(minPoints) / 2 * 1.25);
+        // there we multiple the previews formula by 1.4 times
+        int PARTITION = (int) (Math.sqrt(minPoints) / 2 * 1.4);
         double distance = _radius / PARTITION;
         for (int i = -PARTITION; i <= PARTITION; i++) {
             if (Util.alignZero(i * distance) != 0) {
