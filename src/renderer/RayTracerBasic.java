@@ -4,7 +4,6 @@ import elements.LightSource;
 import primitives.*;
 import scene.Scene;
 
-import javax.naming.LimitExceededException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,6 +26,10 @@ public class RayTracerBasic extends RayTracerBase {
     int MIN_SHADOW_SAMPLES;
     boolean MULTISAMPLING=false;
 
+    public void setMAX_LEVEL(int MAX_LEVEL) {
+        this.MAX_LEVEL = MAX_LEVEL;
+    }
+
     public RayTracerBasic setMULTISAMPLING() {
         MULTISAMPLING = true;
         return this;
@@ -34,8 +37,8 @@ public class RayTracerBasic extends RayTracerBase {
 
 
     /**
-     * setter to the number of ray tracing
-     * @param MIN_SHADOW_SAMPLES
+     * setter to the number of shadow rays
+     * @param MIN_SHADOW_SAMPLES min shadow rays to build
      * @return this - builder pattern
      */
     public RayTracerBasic setMIN_SHADOW_SAMPLES(int MIN_SHADOW_SAMPLES) {
@@ -98,24 +101,24 @@ public class RayTracerBasic extends RayTracerBase {
             Ray middleRight = new Ray(new Vector(c2.add(down.scale(rightLength * 0.5))), p0);
             Ray center = new Ray(new Vector(c1.add(right.scale(rightLength * 0.5)).add(down.scale(downLength * 0.5))), p0);
 
-            List<Ray> cube1 = new LinkedList<Ray>();
+            List<Ray> cube1 = new LinkedList<>();
             cube1.add(middleLeft);
             cube1.add(rays.get(1));
             cube1.add(middleUp);
             cube1.add(center);
-            List<Ray> cube2 = new LinkedList<Ray>();
+            List<Ray> cube2 = new LinkedList<>();
             cube2.add(center);
             cube2.add(middleUp);
             cube2.add(rays.get(3));
             cube2.add(middleRight);
 
-            List<Ray> cube3 = new LinkedList<Ray>();
+            List<Ray> cube3 = new LinkedList<>();
             cube3.add(rays.get(0));
             cube3.add(middleLeft);
             cube3.add(center);
             cube3.add(middleDown);
 
-            List<Ray> cube4 = new LinkedList<Ray>();
+            List<Ray> cube4 = new LinkedList<>();
             cube4.add(middleDown);
             cube4.add(center);
             cube4.add(middleRight);
@@ -140,11 +143,12 @@ public class RayTracerBasic extends RayTracerBase {
      * @param intersection - the current geometry point
      * @param ray - intersected ray
      * @param level - level of recursive reflection and refraction calculate
-     * @return
+     * @return if level > 1 : emission + local effects +global effects.
+     * else : only emission + local effects
      */
     private Color calcColor(GeoPoint intersection, Ray ray, int level, double k) {
         Color color = intersection.geometry.getEmission();
-        color = color.add(calcLocalEffects(intersection, ray,k));
+        color = color.add(calcLocalEffects(intersection, ray));
         return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray.getDirection(), level, k));
 
     }
@@ -166,7 +170,7 @@ public class RayTracerBasic extends RayTracerBase {
      * @param ray - intersected ray
      * @return Color after calculate Local effects
      */
-    private Color calcLocalEffects(GeoPoint geoPoint, Ray ray,double k) {
+    private Color calcLocalEffects(GeoPoint geoPoint, Ray ray) {
         Vector v = ray.getDirection();
         Vector n = geoPoint.geometry.getNormal(geoPoint.point);
         double nv = Util.alignZero(n.dotProduct(v));
@@ -231,7 +235,7 @@ public class RayTracerBasic extends RayTracerBase {
 
     /**
      * checks if there are no interferences in the way of the light source to the point. if there are
-     * other geometries in the midle than there wouldn't be influence of this light source.
+     * other geometries in the middle than there wouldn't be influence of this light source.
      * @param l direction of the light source
      * @param n normal vector to the geometry in the current point
      * @param geoPoint the point we check whether lighten or not
@@ -323,7 +327,7 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     /**
-     * finding the closest intersections to the ray head  in the scene elements
+     * finding the closest intersections to the ray head in the scene elements
      * @param ray
      * @return closest geoPoint
      */
@@ -332,45 +336,15 @@ public class RayTracerBasic extends RayTracerBase {
         return ray.findClosestGeoPoint(points);
     }
 
-    /**
-     *
-     * @param light
-     * @param l
-     * @param n
-     * @param geopoint
-     * @return
-     */
-    /** private double transparency(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
-     List<Point3D> lightPoints = light.randomPoints(l);
-     double total = 0;
-     for (Point3D point: lightPoints) {
-     double lightDistance = light.getDistance(geopoint.point);
-     var intersections = _scene._geometries.findGeoIntersections(new Ray(geopoint.point,point.subtract(geopoint.point),n));
-     if (intersections == null){
-     total = total +1.0;
-     }
-     else {
-     double ktr = 1.0;
-     for (GeoPoint gp : intersections) {
-     if (Util.alignZero(gp.point.distance(geopoint.point) - lightDistance) <= 0) {
-     System.out.println( ktr+" " +gp.geometry.getClass());
-     ktr = ktr *gp.geometry.getMaterial()._kT;
-     System.out.println(ktr);
-     if (ktr < MIN_CALC_COLOR_K) break;
-     }
-     }
-     }
-     }
-     return total / lightPoints.size();
-     }**/
+
 
     /**
-     * calculates the intesity of light coming from light source to geo point
+     * calculates the intensity of light coming from light source to geo point
      * @param light light source
      * @param l light source direction
-     * @param n normal to the geometry which contains the geopoint
+     * @param n normal to the geometry which contains the geoPoint
      * @param geoPoint checked point - whether lighten or shaded
-     * @return value 0%1 represent percentage of lighe approaching to the point from the light source
+     * @return value 0%1 represent percentage of light approaching to the point from the light source
      */
     private double transparency(LightSource light, Vector l, Vector n, GeoPoint geoPoint) {
         List<Ray> lightRays = new LinkedList<>();
@@ -407,7 +381,6 @@ public class RayTracerBasic extends RayTracerBase {
                         if (ktr < MIN_CALC_COLOR_K) {
                             break;
                         }
-                        ;
                     }
                 }
                 ktrTotal += ktr;

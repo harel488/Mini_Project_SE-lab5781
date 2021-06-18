@@ -17,7 +17,7 @@ public class PointLight extends Light implements LightSource {
     private double _kQ = 0;
 
     /**
-     * constructor - get values of the cloror and intensity of the light source.
+     * constructor - get values of the coror and intensity of the light source.
      * decay coefficient have default values and setters.
      * @param intensity genuine intensity of the light source
      * @param position position in the 3D model of the light source
@@ -76,7 +76,12 @@ public class PointLight extends Light implements LightSource {
     public double getDistance(Point3D point) {
         return point.distance(_position);
     }
-
+    /**
+     *
+     * @param lightDirection
+     * @param minPoints
+     * @return list of points distributed on the surface of the light source.min size of the list is as the minimum points required
+     */
     @Override
     public List<Point3D> lightPoints(Vector lightDirection, int minPoints) {
         Plane lightSourcePlane = new Plane(_position, lightDirection);
