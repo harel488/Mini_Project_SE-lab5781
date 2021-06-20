@@ -233,8 +233,7 @@ public class Render {
      * @param row pixel's row number (pixel index in column)
      */
     private void castRay(int nX, int nY, int col, int row) {
-        List<Ray> rays = camera.constructGridThroughPixel(nX, nY, col, row);
-
+        List<ColorRay> rays = camera.constructGridThroughPixel(nX, nY, col, row);
         Color color = tracer.traceRays(rays);
         imageWriter.writePixel(col, row, color);
     }

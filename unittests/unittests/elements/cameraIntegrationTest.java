@@ -30,7 +30,7 @@ public class cameraIntegrationTest {
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                Ray ray = cam.constructRayThroughPixel(3, 3, j, i);
+                Ray ray = cam.constructRayThroughPixel(3, 3, j, i).getRay();
                 List<Point3D> lst = geo.findIntersections(ray);
                 if (lst != null) {
                     if (allPoints == null) {

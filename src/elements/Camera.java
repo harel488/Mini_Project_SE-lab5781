@@ -1,9 +1,11 @@
 package elements;
 
+import primitives.ColorRay;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,6 +23,9 @@ public class Camera {
     private double _height;
     private double _distance;
     private int MULTI_SAMPLING_SAMPLES;
+    //Auxiliary data for calculating the rays without unnecessary repetitions
+    ArrayList<ColorRay> upperPoints;
+    ColorRay leftDown;
 
     public Camera setMULTI_SAMPLING_SAMPLES(int MULTI_SAMPLING_SAMPLES) {
         this.MULTI_SAMPLING_SAMPLES = MULTI_SAMPLING_SAMPLES;
@@ -110,54 +115,31 @@ public class Camera {
      * @param i  position of a pixel on a column
      * @return the constructed ray that goes the center of the pixel
      */
-    public Ray constructRayThroughPixel(int nX, int nY, int j, int i) {
-        Point3D Pc = _p0.add(_vTo.scale(_distance));
-
-        double Rx = _width / nX;
-        double Ry = _height / nY;
-
-        Point3D Pij = Pc;
-
-        double Yi = -Ry * (i - (nY - 1) / 2d);
-        double Xj = Rx * (j - (nX - 1) / 2d);
-
-        if (!isZero(Xj)) {
-            Pij = Pij.add(_vRight.scale(Xj));
-        }
-
-        if (!isZero(Yi)) {
-            Pij = Pij.add(_vUp.scale(Yi));
-        }
-
-        Vector Vij = Pij.subtract(_p0);
-
-        return new Ray(Vij, _p0);
+    public ColorRay constructRayThroughPixel(int nX, int nY, int j, int i) {
+        Point3D Pij = centerPixel(nX,nY,j,i);
+        return new ColorRay(new Ray(Pij.subtract(_p0), _p0));
     }
 
-    public List<Ray> constructGridThroughPixel(int nX, int nY, int j, int i) {
+    /**
+     * generates multiple ray throw the pixel
+     * @param nX number of pixels on a row
+     * @param nY number of pixels on a column
+     * @param j  position of a pixel on a row
+     * @param i  position of a pixel on a column
+     * @return multiple rays that goes throw the pixel, distributed evenly all over the pixel area
+     */
+    public List<ColorRay> constructGridThroughPixel(int nX, int nY, int j, int i) {
+        List<ColorRay> multiSamplingRays = new LinkedList<ColorRay>();
 
-        Point3D Pc = _p0.add(_vTo.scale(_distance));
-        //finding center point of pixel
-        double Rx = _width / nX;
-        double Ry = _height / nY;
-
-        Point3D Pij = Pc;
-
-        double Yi = -Ry * (i - (nY - 1) / 2d);
-        double Xj = Rx * (j - (nX - 1) / 2d);
-
-        if (!isZero(Xj)) {
-            Pij = Pij.add(_vRight.scale(Xj));
+        if(MULTI_SAMPLING_SAMPLES==0){      // no need to activate multi sampling
+            multiSamplingRays.add(constructRayThroughPixel(nX,nY,j,i));
+            return multiSamplingRays;
         }
 
-        if (!isZero(Yi)) {
-            Pij = Pij.add(_vUp.scale(Yi));
-        }
+        Point3D Pij = centerPixel(nX,nY,j,i);
 
         //finding all the points required and build ray to each one
-        List<Ray> multiSamplingRays = new LinkedList<Ray>();
         double moves = (MULTI_SAMPLING_SAMPLES - 1) / 2;
-
         double xSize = _width / nX / (MULTI_SAMPLING_SAMPLES-1);
         double ySize = _height / nY / (MULTI_SAMPLING_SAMPLES-1);
 
@@ -166,10 +148,10 @@ public class Camera {
         Point3D point2 = Pij.add(_vRight.scale(-0.5*xSize)).add(_vUp.scale(0.5*ySize));
         Point3D point3 = Pij.add(_vRight.scale(0.5*xSize)).add(_vUp.scale(-0.5*ySize));
         Point3D point4 = Pij.add(_vRight.scale(0.5*xSize)).add(_vUp.scale(0.5*ySize));
-        multiSamplingRays.add(new Ray(point1.subtract(_p0), _p0));
-        multiSamplingRays.add(new Ray(point2.subtract(_p0), _p0));
-        multiSamplingRays.add(new Ray(point3.subtract(_p0), _p0));
-        multiSamplingRays.add(new Ray(point4.subtract(_p0), _p0));
+        multiSamplingRays.add(new ColorRay(new Ray(point1.subtract(_p0), _p0)));
+        multiSamplingRays.add(new ColorRay(new Ray(point2.subtract(_p0), _p0)));
+        multiSamplingRays.add(new ColorRay(new Ray(point3.subtract(_p0), _p0)));
+        multiSamplingRays.add(new ColorRay(new Ray(point4.subtract(_p0), _p0)));
 
 /**
          for (double k = -moves; k <= moves; k +=1.0) {
@@ -187,7 +169,35 @@ public class Camera {
 
          }**/
         return multiSamplingRays;
+    }
 
+    /**
+     *
+     * @param nX number of columns of the view plane
+     * @param nY number of rows of the view plane
+     * @param j index of the column of the pixel
+     * @param i index of the row of the pixel
+     * @return the center of the pixel (point in the 3D model)
+     */
+    public Point3D centerPixel(int nX, int nY, int j, int i) {
+        Point3D Pc = _p0.add(_vTo.scale(_distance));
 
+        double Rx = _width / nX;
+        double Ry = _height / nY;
+
+        Point3D Pij = Pc;
+
+        double Yi = -Ry * (i - (nY - 1) / 2d);
+        double Xj = Rx * (j - (nX - 1) / 2d);
+
+        if (!isZero(Xj)) {
+            Pij = Pij.add(_vRight.scale(Xj));
+        }
+
+        if (!isZero(Yi)) {
+            Pij = Pij.add(_vUp.scale(Yi));
+        }
+
+        return Pij;
     }
 }

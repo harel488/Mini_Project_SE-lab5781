@@ -63,33 +63,38 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     @Override
-    public Color traceRays(List<Ray> rays) {
+    public Color traceRays(List<ColorRay> rays) {
         if(MULTISAMPLING){
             return traceBeam(rays,0);
         }
         Color col = Color.BLACK;
-        for (Ray ray:rays) {
-            col = col.add(traceRay(ray));
+        for (ColorRay ray:rays) {
+                col = col.add(traceRay(ray.getRay()));
         }
         return  col.reduce(rays.size());
     }
 
     int MAX_LEVEL =4;
-    public Color traceBeam(List<Ray> rays, int level) {
+    public Color traceBeam(List<ColorRay> colorRays, int level) {
+        for (ColorRay colorRay: colorRays) {
+            if (colorRay.getColor() == null) {
+                colorRay.setColor(traceRay(colorRay.getRay()));
+            }
+        }
+        Color leftDown = colorRays.get(0).getColor();
+        Color leftUp = colorRays.get(1).getColor();
+        Color rightDown = colorRays.get(2).getColor();
+        Color rightUp = colorRays.get(3).getColor();
 
-        Color LeftDown = traceRay(rays.get(0));
-        Color leftUp = traceRay(rays.get(1));
-        Color rightDown = traceRay(rays.get(2));
-        Color rightUp = traceRay(rays.get(3));
-        if(level == MAX_LEVEL  ||  (LeftDown.same(leftUp)  && LeftDown.same(rightDown) && LeftDown.same(rightUp))  ){
-            return ( LeftDown.add(leftUp).add(rightDown).add(rightUp) ).reduce(rays.size());
+        if(level == MAX_LEVEL  ||  (  (leftDown.same(leftUp))  && leftDown.same(rightDown)  && leftDown.same(rightUp) )  ){
+            return ( leftDown.add(leftUp).add(rightDown).add(rightUp) ).reduce(colorRays.size());
         }
         else {
-            Point3D c0 = rays.get(0).getDirection().scale(1).getHead();   //corner left down
-            Point3D c1 = rays.get(1).getDirection().scale(1).getHead();   //corner left up
-            Point3D c2 = rays.get(3).getDirection().scale(1).getHead();   //corner right up
+            Point3D c0 = colorRays.get(0).getRay().getDirection().getHead();   //corner left down
+            Point3D c1 = colorRays.get(1).getRay().getDirection().getHead();   //corner left up
+            Point3D c2 = colorRays.get(3).getRay().getDirection().getHead();   //corner right up
 
-            Point3D p0 = rays.get(0).getPoint();
+            Point3D p0 = colorRays.get(0).getRay().getPoint();
             Vector right = c2.subtract(c1).normalize();
             Vector down = c0.subtract(c1).normalize();
 
@@ -101,34 +106,41 @@ public class RayTracerBasic extends RayTracerBase {
             Ray middleRight = new Ray(new Vector(c2.add(down.scale(rightLength * 0.5))), p0);
             Ray center = new Ray(new Vector(c1.add(right.scale(rightLength * 0.5)).add(down.scale(downLength * 0.5))), p0);
 
-            List<Ray> cube1 = new LinkedList<>();
-            cube1.add(middleLeft);
-            cube1.add(rays.get(1));
-            cube1.add(middleUp);
-            cube1.add(center);
-            List<Ray> cube2 = new LinkedList<>();
-            cube2.add(center);
-            cube2.add(middleUp);
-            cube2.add(rays.get(3));
-            cube2.add(middleRight);
+            //calculating ray colors before recursive call to avoid unnecessary recalculations
+            ColorRay middle_up = new ColorRay(   middleUp,traceRay(middleUp)  );
+            ColorRay middle_down = new ColorRay(middleDown,traceRay(middleDown));
+            ColorRay middle_left = new ColorRay(middleLeft,traceRay(middleLeft));
+            ColorRay middle_right = new ColorRay(middleRight,traceRay(middleRight));
+            ColorRay middle = new ColorRay(center,traceRay(center));
 
-            List<Ray> cube3 = new LinkedList<>();
-            cube3.add(rays.get(0));
-            cube3.add(middleLeft);
-            cube3.add(center);
-            cube3.add(middleDown);
+            List<ColorRay> leftUpBeam = new LinkedList<>();
+            leftUpBeam.add(middle_left);
+            leftUpBeam.add(colorRays.get(1));
+            leftUpBeam.add(middle_up);
+            leftUpBeam.add(middle);
+            List<ColorRay> rightUpBeam = new LinkedList<>();
+            rightUpBeam.add(middle);
+            rightUpBeam.add(middle_up);
+            rightUpBeam.add(colorRays.get(3));
+            rightUpBeam.add(middle_right);
 
-            List<Ray> cube4 = new LinkedList<>();
-            cube4.add(middleDown);
-            cube4.add(center);
-            cube4.add(middleRight);
-            cube4.add(rays.get(2));
+            List<ColorRay> leftDownBeam = new LinkedList<>();
+            leftDownBeam.add(colorRays.get(0));
+            leftDownBeam.add(middle_left);
+            leftDownBeam.add(middle);
+            leftDownBeam.add(middle_down);
+
+            List<ColorRay> RightDownBeam = new LinkedList<>();
+            RightDownBeam.add(middle_down);
+            RightDownBeam.add(middle);
+            RightDownBeam.add(middle_right);
+            RightDownBeam.add(colorRays.get(2));
 
             level++;
-            return traceBeam(cube1,level).scale(0.25)
-                    .add(traceBeam(cube2,level).scale(0.25))
-                    .add(traceBeam(cube3,level).scale(0.25))
-                    .add(traceBeam(cube4,level).scale(0.25));
+            return traceBeam(leftUpBeam,level).scale(0.25)
+                    .add(traceBeam(rightUpBeam,level).scale(0.25))
+                    .add(traceBeam(leftDownBeam,level).scale(0.25))
+                    .add(traceBeam(RightDownBeam,level).scale(0.25));
         }
     }
 
