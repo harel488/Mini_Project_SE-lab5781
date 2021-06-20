@@ -17,6 +17,8 @@ public class Color {
     public final double g;
     public final double b;
 
+
+
     /**
      * Black color = (0,0,0)
      */
@@ -28,6 +30,7 @@ public class Color {
     private Color() {
         r = g = b = 0.0;
     }
+
 
     /**
      * Constructor to generate a color according to RGB components Each component in

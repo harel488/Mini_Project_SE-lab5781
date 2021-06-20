@@ -34,7 +34,7 @@ public class DirectionalLight extends Light implements LightSource{
     }
 
     @Override
-    public List<Point3D> lightPoints(Vector lightDircection, int minPoints) {
+    public List<Point3D> lightPoints(Vector lightDirection, int minPoints) {
         return null;
     }
 

@@ -24,8 +24,9 @@ public class Camera {
     private double _distance;
     private int MULTI_SAMPLING_SAMPLES;
     //Auxiliary data for calculating the rays without unnecessary repetitions
-    ArrayList<ColorRay> upperPoints;
-    ColorRay leftDown;
+    //represent the row of pixel up to the row that is being calculated at the moment
+    List<ColorRay> upperPoints = new ArrayList<ColorRay>();
+    ColorRay _leftDown;
 
     public Camera setMULTI_SAMPLING_SAMPLES(int MULTI_SAMPLING_SAMPLES) {
         this.MULTI_SAMPLING_SAMPLES = MULTI_SAMPLING_SAMPLES;
@@ -131,43 +132,72 @@ public class Camera {
     public List<ColorRay> constructGridThroughPixel(int nX, int nY, int j, int i) {
         List<ColorRay> multiSamplingRays = new LinkedList<ColorRay>();
 
-        if(MULTI_SAMPLING_SAMPLES==0){      // no need to activate multi sampling
-            multiSamplingRays.add(constructRayThroughPixel(nX,nY,j,i));
+        if (MULTI_SAMPLING_SAMPLES == 0) {      // no need to activate multi sampling
+            multiSamplingRays.add(constructRayThroughPixel(nX, nY, j, i));
             return multiSamplingRays;
         }
+        //4 rays of the beam
+        ColorRay left_down;
+        ColorRay left_up;
+        ColorRay right_down;
+        ColorRay right_up;
 
-        Point3D Pij = centerPixel(nX,nY,j,i);
-
-        //finding all the points required and build ray to each one
+        Point3D Pij = centerPixel(nX, nY, j, i);
         double moves = (MULTI_SAMPLING_SAMPLES - 1) / 2;
-        double xSize = _width / nX / (MULTI_SAMPLING_SAMPLES-1);
-        double ySize = _height / nY / (MULTI_SAMPLING_SAMPLES-1);
+        double xSize = _width / nX / (MULTI_SAMPLING_SAMPLES - 1);
+        double ySize = _height / nY / (MULTI_SAMPLING_SAMPLES - 1);
 
+        Point3D leftDown = Pij.add(_vRight.scale(-0.5 * xSize)).add(_vUp.scale(-0.5 * ySize));
+        Point3D rightDown = Pij.add(_vRight.scale(0.5 * xSize)).add(_vUp.scale(-0.5 * ySize));
+        left_down = new ColorRay(new Ray(leftDown.subtract(_p0), _p0));
+        right_down = new ColorRay(new Ray(rightDown.subtract(_p0), _p0));
 
-        Point3D point1 = Pij.add(_vRight.scale(-0.5*xSize)).add(_vUp.scale(-0.5*ySize));
-        Point3D point2 = Pij.add(_vRight.scale(-0.5*xSize)).add(_vUp.scale(0.5*ySize));
-        Point3D point3 = Pij.add(_vRight.scale(0.5*xSize)).add(_vUp.scale(-0.5*ySize));
-        Point3D point4 = Pij.add(_vRight.scale(0.5*xSize)).add(_vUp.scale(0.5*ySize));
-        multiSamplingRays.add(new ColorRay(new Ray(point1.subtract(_p0), _p0)));
-        multiSamplingRays.add(new ColorRay(new Ray(point2.subtract(_p0), _p0)));
-        multiSamplingRays.add(new ColorRay(new Ray(point3.subtract(_p0), _p0)));
-        multiSamplingRays.add(new ColorRay(new Ray(point4.subtract(_p0), _p0)));
+        //in the first line of pixels we have no preliminary data
+        //so we have to calculate the upper rays as well
+        if (i == 0) {
+            Point3D leftUp = Pij.add(_vRight.scale(-0.5 * xSize)).add(_vUp.scale(0.5 * ySize));
+            Point3D rightUp = Pij.add(_vRight.scale(0.5 * xSize)).add(_vUp.scale(0.5 * ySize));
+            left_up = new ColorRay(new Ray(leftUp.subtract(_p0), _p0));
+            right_up = new ColorRay(new Ray(rightUp.subtract(_p0), _p0));
+        }
+       else {
+            left_up = upperPoints.get(j);
+            right_up = upperPoints.get(j + 1);
+        }
+
+        if (i == 0) {
+            upperPoints.add(left_down);
+            if (j == nX-1) {
+                upperPoints.add(right_down);
+                System.out.println(upperPoints.size());
+            }
+        } else {
+            upperPoints.set(j, left_down);
+            if (j == nX-1) {
+                upperPoints.set(nX, right_down);
+            }
+        }
+
+        multiSamplingRays.add(left_down);
+        multiSamplingRays.add(left_up);
+        multiSamplingRays.add(right_down);  //left down represents to the next pixel, but here its right down pixel
+        multiSamplingRays.add(right_up);
 
 /**
-         for (double k = -moves; k <= moves; k +=1.0) {
-             Point3D point = Pij;
-             if (k != 0) {
-                 point = point.add(_vRight.scale(xSize * k));
-             }
-             for (double l = -moves; l <= moves; l += 1.0) {
-                 if (l != 0) {
-                     point = point.add(_vUp.scale(ySize * l));
-                 }
-                 multiSamplingRays.add(new Ray(point.subtract(_p0), _p0));
+ for (double k = -moves; k <= moves; k +=1.0) {
+ Point3D point = Pij;
+ if (k != 0) {
+ point = point.add(_vRight.scale(xSize * k));
+ }
+ for (double l = -moves; l <= moves; l += 1.0) {
+ if (l != 0) {
+ point = point.add(_vUp.scale(ySize * l));
+ }
+ multiSamplingRays.add(new Ray(point.subtract(_p0), _p0));
 
-             }
+ }
 
-         }**/
+ }**/
         return multiSamplingRays;
     }
 
@@ -197,7 +227,6 @@ public class Camera {
         if (!isZero(Yi)) {
             Pij = Pij.add(_vUp.scale(Yi));
         }
-
         return Pij;
-    }
+   }
 }

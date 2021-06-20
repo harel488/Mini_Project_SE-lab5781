@@ -29,4 +29,9 @@ public class ColorRay {
     public Ray getRay() {
         return _ray;
     }
+
+    public static void mult(ColorRay ray) {
+        ray.setColor(new Color(7,7,7));
+    }
+
 }

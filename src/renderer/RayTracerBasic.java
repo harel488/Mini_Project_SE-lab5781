@@ -30,6 +30,10 @@ public class RayTracerBasic extends RayTracerBase {
         this.MAX_LEVEL = MAX_LEVEL;
     }
 
+    /**
+     * setter for adaptive super sampling improvement activation
+     * @return this ray tracer (chaining method)
+     */
     public RayTracerBasic setMULTISAMPLING() {
         MULTISAMPLING = true;
         return this;
@@ -76,6 +80,8 @@ public class RayTracerBasic extends RayTracerBase {
 
     int MAX_LEVEL =4;
     public Color traceBeam(List<ColorRay> colorRays, int level) {
+        if(colorRays.size()!=4)
+            throw new IllegalArgumentException("ERROR. in order to execute adaptive super sampling, number of samples must be exactly 4.");
         for (ColorRay colorRay: colorRays) {
             if (colorRay.getColor() == null) {
                 colorRay.setColor(traceRay(colorRay.getRay()));
@@ -195,7 +201,7 @@ public class RayTracerBasic extends RayTracerBase {
             Vector l = lightSource.getL(geoPoint.point);
             double nl = Util.alignZero(n.dotProduct(l));
 
-            if (nl * nv > 0) { // sign(nl) == sing(nv)
+            if (nl * nv > 0) {   // sign(nl) == sing(nv)  - the camera and the light source are on the same side in reference to the point
                 double ktr = transparency(lightSource, l, n, geoPoint);
                 Color lightIntensity = lightSource.getIntensity(geoPoint.point).scale(ktr);
                 color = color.add(calcDiffusive(kd, l, n, lightIntensity))
@@ -283,7 +289,8 @@ public class RayTracerBasic extends RayTracerBase {
      * @return Color in geoPoint after reflections and refractions effects
      */
     private Color calcGlobalEffects(GeoPoint gp, Vector v, int level, double k) {
-        Color color = Color.BLACK; Vector n = gp.geometry.getNormal(gp.point);
+        Color color = Color.BLACK;
+        Vector n = gp.geometry.getNormal(gp.point);
         Material material = gp.geometry.getMaterial();
         double kkr = k * material._kR;
         if (kkr > MIN_CALC_COLOR_K)
