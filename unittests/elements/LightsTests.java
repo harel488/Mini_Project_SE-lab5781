@@ -416,7 +416,7 @@ public class LightsTests {
         ImageWriter imageWriter = new ImageWriter("test1", 1000, 1000);
         Render render = new Render()//
                 .setImageWriter(imageWriter) //
-                .setCamera(camera3.setMin_MULTI_SAMPLING_SAMPLES(2)) //
+                .setCamera(camera3.setMin_MULTI_SAMPLING_SAMPLES(4)) //
                 .setRayTracer(new RayTracerBasic(scene1)
                              .setMIN_SHADOW_SAMPLES(100)
                              .setMULTISAMPLING())

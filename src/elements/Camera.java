@@ -205,7 +205,15 @@ public class Camera {
         }
 
         if (i == 0) {
-            System.out.print("");   //wait
+            try{
+                Thread.currentThread().wait(10);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            //System.out.print("");   //wait
             upperPoints.add(left_down);
             if (j == nX-1) {
                 upperPoints.add(right_down);
