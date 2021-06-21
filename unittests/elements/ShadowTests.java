@@ -2,7 +2,6 @@ package elements;
 
 import org.junit.jupiter.api.Test;
 
-import elements.*;
 import geometries.*;
 import primitives.*;
 import renderer.*;
@@ -67,7 +66,7 @@ public class ShadowTests {
 
         Render render = new Render(). //
                 setImageWriter(new ImageWriter("shadowSphereTriangleMove1", 400, 400)) //
-                .setCamera(camera.setMULTI_SAMPLING_SAMPLES(0)) //
+                .setCamera(camera.setMin_MULTI_SAMPLING_SAMPLES(0)) //
                 .setRayTracer(new RayTracerBasic(scene));
         render.renderImage();
         render.writeToImage();
@@ -121,7 +120,7 @@ public class ShadowTests {
 
         Render render = new Render(). //
                 setImageWriter(new ImageWriter("shadowSphereTriangleLightMove1", 1000, 1000)) //
-                .setCamera(camera.setMULTI_SAMPLING_SAMPLES(9)) //
+                .setCamera(camera.setMin_MULTI_SAMPLING_SAMPLES(9)) //
                 .setRayTracer(new RayTracerBasic(scene).setMIN_SHADOW_SAMPLES(0).setMULTISAMPLING());
         render.renderImage();
         render.writeToImage();
@@ -148,7 +147,7 @@ public class ShadowTests {
 
         Render render = new Render(). //
                 setImageWriter(new ImageWriter("shadowSphereTriangleLightMove2", 1000, 1000)) //
-                .setCamera(camera.setMULTI_SAMPLING_SAMPLES(9)) //
+                .setCamera(camera.setMin_MULTI_SAMPLING_SAMPLES(9)) //
                 .setRayTracer(new RayTracerBasic(scene));
         render.renderImage();
         render.writeToImage();
@@ -203,7 +202,7 @@ public class ShadowTests {
                spotLight.setkL(1E-5).setkQ(1.5E-7));
         Render render = new Render(). //
                 setImageWriter(new ImageWriter("shadowSphereTriangleInitial1", 9, 9)) //
-                .setCamera(camera.setDistance(10).setViewPlaneSize(9,9).setMULTI_SAMPLING_SAMPLES(3)) //
+                .setCamera(camera.setDistance(10).setViewPlaneSize(9,9).setMin_MULTI_SAMPLING_SAMPLES(3)) //
                 .setRayTracer(new RayTracerBasic(scene));
         render.renderImage();
         render.writeToImage();

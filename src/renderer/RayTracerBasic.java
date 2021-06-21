@@ -1,5 +1,6 @@
 package renderer;
 
+import elements.Camera;
 import elements.LightSource;
 import primitives.*;
 import scene.Scene;
@@ -26,9 +27,6 @@ public class RayTracerBasic extends RayTracerBase {
     int MIN_SHADOW_SAMPLES;
     boolean MULTISAMPLING=false;
 
-    public void setMAX_LEVEL(int MAX_LEVEL) {
-        this.MAX_LEVEL = MAX_LEVEL;
-    }
 
     /**
      * setter for adaptive super sampling improvement activation
@@ -73,15 +71,32 @@ public class RayTracerBasic extends RayTracerBase {
         }
         Color col = Color.BLACK;
         for (ColorRay ray:rays) {
-                col = col.add(traceRay(ray.getRay()));
+            col = col.add(traceRay(ray.getRay()));
         }
         return  col.reduce(rays.size());
     }
 
-    int MAX_LEVEL =4;
+
+    int MAX_LEVEL =4;       //level of recursive calls to divide the beam
+    /**
+     *
+     * @param MAX_LEVEL max level of recursive calls to divide the beam
+     */
+    public void setMAX_LEVEL(int MAX_LEVEL) {
+        this.MAX_LEVEL = MAX_LEVEL;
+    }
+
+    /**
+     * calculate the color the beam 'sees', by average of the rays
+     * if necessary (not possible to determine color) divides the beam to 4 smaller beam every time
+     * @param colorRays list of camera rays, representing the beam
+     * @param level recursive level. if we reached max value no more recursive call will applied
+     * @return weighted average of the ray colors (with meaning to the weight of each sample)
+     */
     public Color traceBeam(List<ColorRay> colorRays, int level) {
-        if(colorRays.size()!=4)
+        if(colorRays.size()!= Camera.Beam_Samples_NUM)
             throw new IllegalArgumentException("ERROR. in order to execute adaptive super sampling, number of samples must be exactly 4.");
+        //calculate the color of the colorRays, if needed
         for (ColorRay colorRay: colorRays) {
             if (colorRay.getColor() == null) {
                 colorRay.setColor(traceRay(colorRay.getRay()));
@@ -92,10 +107,11 @@ public class RayTracerBasic extends RayTracerBase {
         Color rightDown = colorRays.get(2).getColor();
         Color rightUp = colorRays.get(3).getColor();
 
-        if(level == MAX_LEVEL  ||  (  (leftDown.same(leftUp))  && leftDown.same(rightDown)  && leftDown.same(rightUp) )  ){
+        //return average color of the rays if the colors of all of them are similar
+        if(level == MAX_LEVEL  ||  (  (leftDown.similar(leftUp))  && leftDown.similar(rightDown)  && leftDown.similar(rightUp) )  ){
             return ( leftDown.add(leftUp).add(rightDown).add(rightUp) ).reduce(colorRays.size());
         }
-        else {
+        else {      //build new sample rays
             Point3D c0 = colorRays.get(0).getRay().getDirection().getHead();   //corner left down
             Point3D c1 = colorRays.get(1).getRay().getDirection().getHead();   //corner left up
             Point3D c2 = colorRays.get(3).getRay().getDirection().getHead();   //corner right up
@@ -119,6 +135,7 @@ public class RayTracerBasic extends RayTracerBase {
             ColorRay middle_right = new ColorRay(middleRight,traceRay(middleRight));
             ColorRay middle = new ColorRay(center,traceRay(center));
 
+            //divide the beam to 4 smaller beams
             List<ColorRay> leftUpBeam = new LinkedList<>();
             leftUpBeam.add(middle_left);
             leftUpBeam.add(colorRays.get(1));
@@ -143,6 +160,7 @@ public class RayTracerBasic extends RayTracerBase {
             RightDownBeam.add(colorRays.get(2));
 
             level++;
+            //calculates the divided beams color and made average of them
             return traceBeam(leftUpBeam,level).scale(0.25)
                     .add(traceBeam(rightUpBeam,level).scale(0.25))
                     .add(traceBeam(leftDownBeam,level).scale(0.25))

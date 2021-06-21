@@ -125,16 +125,26 @@ public class Color {
         return new Color(r / k, g / k, b / k);
     }
 
+
+    double Max_difference_Percentage =0.1;
+
+    public void setMax_difference_Percentage(double max_difference_Percentage) {
+        Max_difference_Percentage = max_difference_Percentage;
+    }
+
     /**
      * checks if two colors looks the same
      * @param otherColor
-     * @return true if the difference between the colors are not more than 5 percent in each of the RGB. else false
+     * @return true if the difference between the colors are not more than maximus
+     * percentage in each of the RGB values. else false
      */
-    public boolean same(Color otherColor){
+    public boolean similar(Color otherColor){
         double red = otherColor.r / r;
         double green = otherColor.g / g;
         double blue = otherColor.b / b;
-        return !(red>1.1 || red <0.9|| green>1.1 || green <0.9 ||blue>1.1 || blue <0.9);
+        return !(red>1+Max_difference_Percentage || red <1-Max_difference_Percentage ||
+                green>1+Max_difference_Percentage || green <1-Max_difference_Percentage ||
+                blue>1+Max_difference_Percentage || blue <Max_difference_Percentage);
     }
 
 }

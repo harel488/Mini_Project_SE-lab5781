@@ -22,14 +22,15 @@ public class Camera {
     private double _width;
     private double _height;
     private double _distance;
-    private int MULTI_SAMPLING_SAMPLES;
+    private int Min_MULTI_SAMPLING_SAMPLES;
+    static public int Beam_Samples_NUM = 4 ;  // for adaptive super sampling we build a beam represented by 4,one for each rays pixel vertex
+
     //Auxiliary data for calculating the rays without unnecessary repetitions
     //represent the row of pixel up to the row that is being calculated at the moment
-    List<ColorRay> upperPoints = new ArrayList<ColorRay>();
-    ColorRay _leftDown;
+    List<ColorRay> upperPoints = new ArrayList<>();
 
-    public Camera setMULTI_SAMPLING_SAMPLES(int MULTI_SAMPLING_SAMPLES) {
-        this.MULTI_SAMPLING_SAMPLES = MULTI_SAMPLING_SAMPLES;
+    public Camera setMin_MULTI_SAMPLING_SAMPLES(int min_MULTI_SAMPLING_SAMPLES) {
+        this.Min_MULTI_SAMPLING_SAMPLES = min_MULTI_SAMPLING_SAMPLES;
         return this;
     }
 
@@ -132,10 +133,48 @@ public class Camera {
     public List<ColorRay> constructGridThroughPixel(int nX, int nY, int j, int i) {
         List<ColorRay> multiSamplingRays = new LinkedList<ColorRay>();
 
-        if (MULTI_SAMPLING_SAMPLES == 0) {      // no need to activate multi sampling
+        if (Min_MULTI_SAMPLING_SAMPLES == 0) {      // no need to activate multi sampling
             multiSamplingRays.add(constructRayThroughPixel(nX, nY, j, i));
-            return multiSamplingRays;
         }
+        else if (Min_MULTI_SAMPLING_SAMPLES == Beam_Samples_NUM) {      // no need to activate multi sampling
+            return constructAdaptiveSsRays(nX,nY,j,i);
+        }
+        else {
+            Point3D Pij = centerPixel(nX, nY, j, i);
+            double pixelWidth = _width / nX;
+            double pixelHeight = _height / nY;
+            Point3D leftUp = Pij.add(_vRight.scale(-0.5*pixelWidth).add(_vUp.scale(0.5*pixelHeight)));
+            int moves =(int) (Math.sqrt(Min_MULTI_SAMPLING_SAMPLES)) ;
+            //distance between every sample to the one right to him
+            double rightSize = pixelWidth / moves;
+            //distance between every sample to the one below him
+            double downSize = pixelWidth / moves;
+            for (int k = 0; k <= moves; k ++) {
+                Point3D point = leftUp;
+                if (k != 0) {
+                    point = point.add(_vRight.scale(rightSize * k));
+                }
+                for (double l = 0; l <= moves; l += 1.0) {
+                    if (l != 0) {
+                        point = point.add(_vUp.scale(downSize * l));
+                    }
+                    multiSamplingRays.add(new ColorRay(new Ray(point.subtract(_p0), _p0)));
+                }
+            }
+        }
+        return multiSamplingRays;
+    }
+
+    /**
+     * construct camera rays for adaptive super sampling
+     * @param nX number of pixels on a row
+     * @param nY number of pixels on a column
+     * @param j  position of a pixel on a row
+     * @param i  position of a pixel on a column
+     * @return beam of 4 rays - from the camera to every vertex of the pixel
+     */
+    public List<ColorRay> constructAdaptiveSsRays(int nX, int nY, int j, int i) {
+        List<ColorRay> AdaptiveSsRays = new LinkedList<ColorRay>();
         //4 rays of the beam
         ColorRay left_down;
         ColorRay left_up;
@@ -143,9 +182,9 @@ public class Camera {
         ColorRay right_up;
 
         Point3D Pij = centerPixel(nX, nY, j, i);
-        double moves = (MULTI_SAMPLING_SAMPLES - 1) / 2;
-        double xSize = _width / nX / (MULTI_SAMPLING_SAMPLES - 1);
-        double ySize = _height / nY / (MULTI_SAMPLING_SAMPLES - 1);
+        double moves = (Min_MULTI_SAMPLING_SAMPLES - 1) / 2;
+        double xSize = _width / nX / (Min_MULTI_SAMPLING_SAMPLES - 1);
+        double ySize = _height / nY / (Min_MULTI_SAMPLING_SAMPLES - 1);
 
         Point3D leftDown = Pij.add(_vRight.scale(-0.5 * xSize)).add(_vUp.scale(-0.5 * ySize));
         Point3D rightDown = Pij.add(_vRight.scale(0.5 * xSize)).add(_vUp.scale(-0.5 * ySize));
@@ -160,16 +199,16 @@ public class Camera {
             left_up = new ColorRay(new Ray(leftUp.subtract(_p0), _p0));
             right_up = new ColorRay(new Ray(rightUp.subtract(_p0), _p0));
         }
-       else {
+        else {      //the upper values has been calculated in the upper pixel
             left_up = upperPoints.get(j);
             right_up = upperPoints.get(j + 1);
         }
 
         if (i == 0) {
+            System.out.print("");   //wait
             upperPoints.add(left_down);
             if (j == nX-1) {
                 upperPoints.add(right_down);
-                System.out.println(upperPoints.size());
             }
         } else {
             upperPoints.set(j, left_down);
@@ -178,37 +217,21 @@ public class Camera {
             }
         }
 
-        multiSamplingRays.add(left_down);
-        multiSamplingRays.add(left_up);
-        multiSamplingRays.add(right_down);  //left down represents to the next pixel, but here its right down pixel
-        multiSamplingRays.add(right_up);
-
-/**
- for (double k = -moves; k <= moves; k +=1.0) {
- Point3D point = Pij;
- if (k != 0) {
- point = point.add(_vRight.scale(xSize * k));
- }
- for (double l = -moves; l <= moves; l += 1.0) {
- if (l != 0) {
- point = point.add(_vUp.scale(ySize * l));
- }
- multiSamplingRays.add(new Ray(point.subtract(_p0), _p0));
-
- }
-
- }**/
-        return multiSamplingRays;
+        AdaptiveSsRays.add(left_down);
+        AdaptiveSsRays.add(left_up);
+        AdaptiveSsRays.add(right_down);  //left down represents to the next pixel, but here its right down pixel
+        AdaptiveSsRays.add(right_up);
+        return AdaptiveSsRays;
     }
 
-    /**
-     *
-     * @param nX number of columns of the view plane
-     * @param nY number of rows of the view plane
-     * @param j index of the column of the pixel
-     * @param i index of the row of the pixel
-     * @return the center of the pixel (point in the 3D model)
-     */
+        /**
+         *
+         * @param nX number of columns of the view plane
+         * @param nY number of rows of the view plane
+         * @param j index of the column of the pixel
+         * @param i index of the row of the pixel
+         * @return the center of the pixel (point in the 3D model)
+         */
     public Point3D centerPixel(int nX, int nY, int j, int i) {
         Point3D Pc = _p0.add(_vTo.scale(_distance));
 
@@ -228,5 +251,5 @@ public class Camera {
             Pij = Pij.add(_vUp.scale(Yi));
         }
         return Pij;
-   }
+    }
 }
