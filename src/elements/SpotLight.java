@@ -39,8 +39,7 @@ public class SpotLight extends PointLight {
 
 
     /**
-     * c
-     * original intenisy *
+5     * original intenisy *
      * MAXIMUM[ calar multiplication (spot light direction * l vector (vector between the spot light source and
      * the lighten point)   ,   0 ]
      * /

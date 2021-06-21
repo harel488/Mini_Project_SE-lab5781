@@ -16,6 +16,7 @@ public class PointLight extends Light implements LightSource {
     private double _kL = 0;
     private double _kQ = 0;
 
+
     /**
      * constructor - get values of the coror and intensity of the light source.
      * decay coefficient have default values and setters.
